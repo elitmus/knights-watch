@@ -1,0 +1,39 @@
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<h1>Video Streamings</h1>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Total Rooms</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><%= @all_rooms.length%></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="panel panel-default" style="margin-top: 15px;">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Channel Id</th>
+        <th>View Live</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @all_rooms.each do |room| %>
+        <tr>
+          <td> <%= room.room %></td>
+          <td> <%= link_to 'Live', stream_room_video_streaming_path(id: room.room) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

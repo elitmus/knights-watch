@@ -1,0 +1,9 @@
+<%= render partial: "list" %>
+
+<div>
+  <%= form_for :video_streaming, url: distribute_channel_to_rooms_video_streamings_path, method: :get do |f| %>
+    <%= f.text_field :no_of_users_in_channel, placeholder: 'Enter the amount of candidate you want in a room.', size: '50' %>
+    <%= f.hidden_field :event_id, { value: params[:id] } %>
+    <%= f.submit "Distribute channels to rooms" %>
+  <% end %>
+</div>
