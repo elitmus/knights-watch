@@ -2,7 +2,85 @@
 Short description and motivation.
 
 ## Usage
-How to use my plugin.
+
+Current features:
+
+* Live Video streaming single and bulk
+
+Future plans:
+
+* Face detection
+* AI video proctoring
+* AI image proctoring
+
+### Live streaming
+
+Add yarn dependencies to your product:
+
+```bash
+yarn add rtcmulticonnection
+```
+
+For adding rtc libraries in the page you want to proctor add:
+
+```erb
+render file: 'proctoring/video_streaming/_socket_rtc_scripts.html.erb'
+```
+
+Now create a new js/jsx file and add below script:
+
+```jsx
+const RTCMultiConnection = require('rtcmulticonnection');
+
+const connectVideo = async (eventId, userId) => {
+  const userConferenceId = `proctoring-video_streaming-${eventId}-${userId}`;
+  const resp = await fetch(`/proctoring/video_streaming/user_channel.json?event_id=${eventId}&user_id=${userId}`);
+  const proctorResp = await resp.json();
+  const connection = new RTCMultiConnection();
+  connection.socketURL = proctorResp.socketURL;
+  connection.session = {
+    audio: false,
+    video: true,
+  };
+
+  connection.sdpConstraints.mandatory = {
+    OfferToReceiveAudio: false,
+    OfferToReceiveVideo: true,
+  };
+
+  connection.userid = userConferenceId;
+
+  connection.extra = {
+    eventId,
+    userId,
+  };
+
+
+  connection.setUserPreferences = (userPreferences) => {
+    // eslint-disable-next-line no-param-reassign
+    userPreferences.dontGetRemoteStream = true;
+    return userPreferences;
+  };
+
+  connection.onstream = () => {};
+  if (proctorResp && proctorResp.room_id) {
+    connection.openOrJoin(proctorResp.room_id, () => {
+      setTimeout(() => {
+        const localStream = connection.attachStreams[0];
+        localStream.mute('audio');
+      }, 500);
+    });
+  }
+};
+export default {
+  createJoinRoom(eventId, userId) {
+    connectVideo(eventId, userId);
+  },
+};
+```
+
+Use createJoinRoom in your react component, eventId and userId are mandatory in above module.
+You can also use it as a ES5 script no extra changes needed other than the module definition.
 
 ## Installation
 Add this line to your application's Gemfile:

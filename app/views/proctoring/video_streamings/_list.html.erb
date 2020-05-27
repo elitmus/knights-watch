@@ -1,0 +1,27 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Video Streamings</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Channel</th>
+      <th>Event</th>
+      <th>User</th>
+      <th colspan="1"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @video_streamings.each do |video_streaming| %>
+      <tr>
+        <td><%= video_streaming.channel %></td>
+        <td><%= link_to video_streaming.event_id, event_video_streaming_path(video_streaming.event_id) %></td>
+        <td><%= video_streaming.user_id %></td>
+        <td><%= link_to 'Live', stream_channel_video_streaming_path(video_streaming.channel) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>

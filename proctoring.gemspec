@@ -8,10 +8,10 @@ Gem::Specification.new do |spec|
   spec.name        = "proctoring"
   spec.version     = Proctoring::VERSION
   spec.authors     = ["Shubham Pandey"]
-  spec.email       = ["shubham9411@gmail.com"]
-  spec.homepage    = "TODO"
-  spec.summary     = "TODO: Summary of Proctoring."
-  spec.description = "TODO: Description of Proctoring."
+  spec.email       = ["shubham.pandey@elitmus.com"]
+  spec.homepage    = "https://www.elitmus.com"
+  spec.summary     = "A proctoring rails engine to provide proctoring features to varuious apps in a decentralised way."
+  spec.description = "A proctoring rails engine to provide proctoring features to varuious apps in a decentralised way."
   spec.license     = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'

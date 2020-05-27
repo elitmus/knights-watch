@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Channel:</strong>
+  <%= @video_streaming.channel %>
+</p>
+
+<p>
+  <strong>Event:</strong>
+  <%= @video_streaming.event_id %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @video_streaming.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_video_streaming_path(@video_streaming) %> |
+<%= link_to 'Back', video_streamings_path %>
