@@ -1,7 +1,7 @@
 module Proctoring
   class << self
-    mattr_accessor :stream_video_url
-    self.stream_video_url = 'https://nainital-beta.elitmus.com:8000/'
+    mattr_accessor :media_server_url
+    self.media_server_url = 'nainital-beta.elitmus.com'
   end
 
   def self.setup(&block)

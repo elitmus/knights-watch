@@ -13,6 +13,8 @@ Future plans:
 * AI video proctoring
 * AI image proctoring
 
+***This Gem is currently under development and API can change in future***
+
 ### Live streaming
 
 Add yarn dependencies to your product:
@@ -82,6 +84,15 @@ export default {
 Use createJoinRoom in your react component, eventId and userId are mandatory in above module.
 You can also use it as a ES5 script no extra changes needed other than the module definition.
 
+### Per user recording
+
+```erb
+  <%= render template: 'proctoring/video_streamings/_video_recording.html.erb'%>
+  <div id="proctoring-data" data-stream-video-url=<%=Proctoring.stream_video_url%>></div>
+```
+
+now `startRecordingSingleSession(eventId, userId)` javascript method will be available at the global scope which can be called when the session needs to be recorded. Both eventId and userId are required paramaeters for now.
+
 ## Installation
 Add this line to your application's Gemfile:
 
@@ -97,6 +108,19 @@ $ bundle
 Or install it yourself as:
 ```bash
 $ gem install proctoring
+```
+mount in application
+
+```ruby
+mount Proctoring::Engine => '/proctoring'
+```
+
+create initializer file
+
+```ruby
+Proctoring.setup do |config|
+  config.media_server_url = 'server-url without protocol and no extra forward slashes'
+end
 ```
 
 ## Contributing
