@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    proctoring (0.1.2.pre.rfc)
+    proctoring (0.2.0)
       rails (~> 6.0.0, >= 6.0.0.0)
 
 GEM
@@ -127,7 +127,7 @@ GEM
     thread_safe (0.3.6)
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
-    websocket-driver (0.7.1)
+    websocket-driver (0.7.2)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.4)
     zeitwerk (2.3.0)

@@ -1,3 +1,3 @@
 module Proctoring
-  VERSION = '0.1.2-rfc'
+  VERSION = '0.2.0'
 end
