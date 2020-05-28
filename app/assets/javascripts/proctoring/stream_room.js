@@ -1,7 +1,7 @@
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.msGetUserMedia || navigator.mediaDevices.getUserMedia;
 const channelDiv = document.getElementById("channel-data");
 let connection = new RTCMultiConnection();
-connection.socketURL = channelDiv.dataset.streamVideoUrl;
+connection.socketURL = `https://${channelDiv.dataset.mediaServerUrl}/`;
 var listOfRecorders = {};
 
 connection.session = {

@@ -1,7 +1,7 @@
 let channelElm = document.getElementById('channel-data');
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.msGetUserMedia || navigator.mediaDevices.getUserMedia;
 let connection = new RTCMultiConnection();
-connection.socketURL = channelElm.dataset.streamVideoUrl;
+connection.socketURL = channelElm.dataset.mediaServerUrl;
 
 connection.session = {
   audio: false,
