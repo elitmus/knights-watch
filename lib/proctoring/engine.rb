@@ -1,7 +1,9 @@
 module Proctoring
   class << self
     mattr_accessor :media_server_url
-    self.media_server_url = 'nainital-beta.elitmus.com'
+    mattr_accessor :app_name
+    self.media_server_url = 'localhost:8000'
+    self.app_name = 'default'
   end
 
   def self.setup(&block)

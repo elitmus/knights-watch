@@ -1,0 +1,8 @@
+<%= content_tag :div, '', id: "video-recording-info", data: {
+  app_name: Proctoring.app_name,
+  record_endpoint: '/proctoring/video_streamings',
+  upload_url: rails_direct_uploads_url,
+
+} %>
+<%= javascript_include_tag "activestorage" %>
+<%= javascript_include_tag "proctoring/video_recorder" %>

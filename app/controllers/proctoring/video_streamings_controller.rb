@@ -2,7 +2,7 @@ require_dependency "proctoring/application_controller"
 
 module Proctoring
   class VideoStreamingsController < ApplicationController
-    before_action :set_video_streaming, only: [:show, :edit, :update, :destroy]
+    before_action :set_video_streaming, only: [:show, :edit, :update, :destroy, :upload_video]
 
     # GET /video_streamings
     def index
@@ -42,6 +42,19 @@ module Proctoring
       end
     end
 
+    # PATCH/PUT /video_streamings/1/upload_video
+    def upload_video
+      video_streaming = video_streaming_params
+      # return unless session[:user_id] != video_streaming[:user_id]
+      # video_streaming[:videos] = @video_streaming.all_attached_videos_sign_ids + video_streaming[:videos]
+      # p video_streaming
+      if @video_streaming.update(video_streaming_params)
+        render json: {}, status: :ok
+      else
+        render json: {}, status: 422
+      end
+    end
+
     # DELETE /video_streamings/1
     def destroy
       @video_streaming.stopped!
@@ -56,17 +69,17 @@ module Proctoring
       user_id = params[:user_id]
       event_id = params[:event_id]
       video_streaming = VideoStreaming.open_join_channel(user_id, event_id)
-      render json: { channel: video_streaming.channel, socketURL: Proctoring.stream_video_url }
+      render json: { id: video_streaming.id, channel: video_streaming.channel, socketURL: Proctoring.media_server_url }
     end
 
     def stream_channel
-      @stream_video_url = Proctoring.stream_video_url
+      @media_server_url = Proctoring.media_server_url
       @video_streaming = VideoStreaming.find_by(channel: params[:id])
       @channels = [@video_streaming.channel]
     end
 
     def stream_room
-      @stream_video_url = Proctoring.stream_video_url
+      @media_server_url = Proctoring.media_server_url
       @video_streaming_room = VideoStreamingRoom.find_by(room: params[:id])
     end
 
@@ -85,7 +98,7 @@ module Proctoring
 
       # Only allow a trusted parameter "white list" through.
       def video_streaming_params
-        params.require(:video_streaming).permit(:channel, :user_id, :event_id)
+        params.require(:video_streaming).permit(:channel, :user_id, :event_id, videos: [], images: [])
       end
 
       def proctor_user_params

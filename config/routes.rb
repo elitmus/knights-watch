@@ -8,6 +8,7 @@ Proctoring::Engine.routes.draw do
       get 'event'
       get 'stream_channel'
       get 'stream_room'
+      post 'upload_video'
     end
   end
 end

@@ -4,12 +4,18 @@ module Proctoring
     validates :user_id,  presence: true
     validates :event_id, presence: true
     validates_uniqueness_of :user_id, scope: [:event_id]
+    has_many_attached :images
+    has_many_attached :videos
 
     enum status: { active: 0, stopped: 1 }
 
     before_validation :ensure_channel_has_a_value
 
     scope :by_event, ->(event_id) { where(event_id: event_id) }
+    
+    def all_attached_videos_sign_ids
+      videos.map(&:signed_id)
+    end
 
     def self.setup_rooms(event_id, no_of_users_in_channel)
       @channels = VideoStreaming.by_event(event_id).active.pluck(:channel)
