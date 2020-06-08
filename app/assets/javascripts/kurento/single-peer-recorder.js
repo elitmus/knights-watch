@@ -3,6 +3,7 @@ let streamConfig = {}
 let webRtcPeer;
 let client;
 let pipeline;
+let recorder;
 
 window.addEventListener("DOMContentLoaded", () => {
   console.log("DOM fully loaded and parsed");
@@ -35,7 +36,9 @@ function setIceCandidateCallbacks(webRtcPeer, webRtcEp, onerror)
 
 
 function startRecordingSingleSession(eventName, user) {
-  streamConfig.file_uri = `file:///recordings/${eventName}/${user}-${+new Date()}.webm`;
+  const proctoringData = document.getElementById("proctoring-data");
+  const { appName } = proctoringData.dataset;
+  streamConfig.file_uri = `file:///recordings/${appName}/${eventName}/${user}-${+new Date()}.webm`;
   let constraints = {
     audio: true,
     video: {
@@ -76,7 +79,7 @@ function onStartOffer(error, sdpOffer) {
       let webRtc = yield pipeline.create("WebRtcEndpoint");
       setIceCandidateCallbacks(webRtcPeer, webRtc, onError);
 
-      let recorder = yield pipeline.create("RecorderEndpoint", {
+      recorder = yield pipeline.create("RecorderEndpoint", {
         uri: streamConfig.file_uri,
       });
 
@@ -99,8 +102,31 @@ function onStartOffer(error, sdpOffer) {
 function onError(error) {
   if (error) {
     console.error(error);
-    // recorder.stop();
-    // pipeline.release();
-    // webRtcPeer.dispose();
+    recorder.stop();
+    pipeline.release();
+    webRtcPeer.dispose();
+    setTimeout(() => {
+      startRecordingSingleSession(
+        streamConfig[eventName],
+        streamConfig[user]
+      );
+    }, 300);
   }
+}
+
+function startRecordingSingleSessionWithInterval(eventName, user) {
+  streamConfig[eventName] = eventName;
+  streamConfig[user] = user;
+  startRecordingSingleSession(eventName, user);
+  setInterval(() => {
+    console.log('retry')
+    if (recorder && pipeline && webRtcPeer) {
+      recorder.stop();
+      pipeline.release();
+      webRtcPeer.dispose();
+    }
+    setTimeout(() => {
+      startRecordingSingleSession(eventName, user);
+    }, 300);
+  }, ((1000 * 60 * 5) + 300) );
 }
