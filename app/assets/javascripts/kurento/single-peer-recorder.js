@@ -38,7 +38,7 @@ function setIceCandidateCallbacks(webRtcPeer, webRtcEp, onerror)
 function startRecordingSingleSession(eventName, user) {
   const proctoringData = document.getElementById("proctoring-data");
   const { appName } = proctoringData.dataset;
-  streamConfig.file_uri = `file:///recordings/${appName}/${eventName}/${user}-${+new Date()}.webm`;
+  streamConfig.file_uri = `file:///recordings/app_data/${appName}/video/${eventName}/${user}/${user}-${+new Date()}.webm`;
   let constraints = {
     audio: true,
     video: {
