@@ -114,7 +114,10 @@ function onError(error) {
   }
 }
 
-function startRecordingSingleSessionWithInterval(eventName, user) {
+function startRecordingSingleSessionWithInterval(eventName, user, interval=30000) {
+  if(typeof interval !== 'number' || interval < 30000) { // In ms
+    throw "Interval for single session must be more than or equal to 30sec.";
+  }
   streamConfig[eventName] = eventName;
   streamConfig[user] = user;
   startRecordingSingleSession(eventName, user);
@@ -128,5 +131,5 @@ function startRecordingSingleSessionWithInterval(eventName, user) {
     setTimeout(() => {
       startRecordingSingleSession(eventName, user);
     }, 300);
-  }, ((1000 * 60 * 5) + 300) );
+  }, (interval + 300) );
 }
