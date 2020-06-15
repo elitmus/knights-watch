@@ -1,5 +1,6 @@
-# Proctoring
-Short description and motivation.
+# knights_watch
+
+Rails engine to connect rails with the media server.
 
 ## Usage
 
@@ -18,8 +19,8 @@ Future plans:
 ### Per user recording
 
 ```erb
-  <%= render template: 'proctoring/video_streamings/_video_recording.html.erb'%>
-  <div id="proctoring-data" data-stream-video-url=<%=Proctoring.media_server_url  %>></div>
+  <%= render template: 'knights_watch/video_streamings/_video_recording.html.erb'%>
+  <div id="proctoring-data" data-stream-video-url=<%=KnightsWatch.media_server_url  %>></div>
 ```
 
 now `startRecordingSingleSession(eventId, userId)` javascript method will be available at the global scope which can be called when the session needs to be recorded. Both eventId and userId are required paramaeters for now.
@@ -28,7 +29,7 @@ now `startRecordingSingleSession(eventId, userId)` javascript method will be ava
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'proctoring'
+gem 'knights_watch'
 ```
 
 And then execute:
@@ -38,18 +39,18 @@ $ bundle
 
 Or install it yourself as:
 ```bash
-$ gem install proctoring
+$ gem install knights_watch
 ```
 mount in application
 
 ```ruby
-mount Proctoring::Engine => '/proctoring'
+mount KnightsWatch::Engine => '/knights_watch'
 ```
 
 create initializer file
 
 ```ruby
-Proctoring.setup do |config|
+KnightsWatch.setup do |config|
   config.media_server_url = 'server-url without protocol and no extra forward slashes'
 end
 ```

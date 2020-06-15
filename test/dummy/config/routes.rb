@@ -1,3 +1,3 @@
 Rails.application.routes.draw do
-  mount Proctoring::Engine => "/proctoring"
+  mount KnightsWatch::Engine => "/knights_watch"
 end

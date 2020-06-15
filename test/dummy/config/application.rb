@@ -3,7 +3,7 @@ require_relative 'boot'
 require 'rails/all'
 
 Bundler.require(*Rails.groups)
-require "proctoring"
+require "knights_watch"
 
 module Dummy
   class Application < Rails::Application

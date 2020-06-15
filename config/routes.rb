@@ -1,4 +1,4 @@
-Proctoring::Engine.routes.draw do
+KnightsWatch::Engine.routes.draw do
   resources :video_streamings do
     collection do
       get 'distribute_channel_to_rooms'

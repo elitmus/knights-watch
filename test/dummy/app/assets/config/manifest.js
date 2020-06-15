@@ -1,3 +1,3 @@
 //= link_tree ../images
 //= link_directory ../stylesheets .css
-//= link proctoring_manifest.js
+//= link knights_watch_manifest.js
