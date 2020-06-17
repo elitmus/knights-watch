@@ -127,7 +127,6 @@ class VideoRecording {
 
         // setStatus(CALLING);
       } catch (e) {
-        console.log(e);
         self.onError(e);
       }
     })();
@@ -169,7 +168,6 @@ class VideoRecording {
 
     co(function* () {
       try {
-        console.log(self);
         if (!self.client)
           self.client = yield kurentoClient(self.streamConfig.ws_uri);
 
@@ -192,7 +190,6 @@ class VideoRecording {
 
         yield self.player.play();
       } catch (e) {
-        console.log(e);
         self.onError(e);
       }
     })();
@@ -200,7 +197,7 @@ class VideoRecording {
 
   onError(error) {
     if (error) {
-      console.log(error);
+      console.error(error);
       this.stopRecording();
       setTimeout(() => {
         if (this.interval) {
