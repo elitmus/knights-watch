@@ -1,5 +1,10 @@
 class VideoRecording {
-  constructor(event, user, inputVideoElmId = false, proctoringDataElmId = "proctoring-data",) {
+  constructor(
+    event,
+    user,
+    inputVideoElmId = false,
+    proctoringDataElmId = "proctoring-data"
+  ) {
     this.webRtcPeer;
     this.client;
     this.pipeline;
@@ -21,7 +26,9 @@ class VideoRecording {
       this.appName = window.location.host;
     }
     this.streamConfig = {
-      ws_uri: `ws${location.protocol === 'http:' ? '' : 's'}://${this.mediaServerUrl}/kurento`,
+      ws_uri: `ws${location.protocol === "http:" ? "" : "s"}://${
+        this.mediaServerUrl
+      }/kurento`,
       ice_servers: undefined,
     };
     this.onStartOffer = this.onStartOffer.bind(this);
@@ -118,10 +125,10 @@ class VideoRecording {
     })();
   }
 
-  playVideo(elm='videoOutput') {
+  playVideo(elm = "videoOutput") {
     const videoOutput = document.getElementById(elm);
     let options = {
-      remoteVideo: videoOutput
+      remoteVideo: videoOutput,
     };
 
     if (this.streamConfig.ice_servers) {
@@ -133,27 +140,30 @@ class VideoRecording {
       console.log("Use freeice");
     }
     const self = this;
-    self.webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error)
-    {
-      if(error) return onError(error)
+    self.webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
+      options,
+      function (error) {
+        if (error) return onError(error);
 
-      this.generateOffer(self.onPlayOffer)
-    });
+        this.generateOffer(self.onPlayOffer);
+      }
+    );
   }
 
-  stopAndPlayVideo(elm='videoOutput') {
+  stopAndPlayVideo(elm = "videoOutput") {
     this.stopRecording();
     this.playVideo(elm);
   }
 
-  onPlayOffer(error, sdpOffer){
+  onPlayOffer(error, sdpOffer) {
     const self = this;
-    if(error) return self.onError(error);
+    if (error) return self.onError(error);
 
     co(function* () {
       try {
-        console.log(self)
-        if (!self.client) self.client = yield kurentoClient(self.streamConfig.ws_uri);
+        console.log(self);
+        if (!self.client)
+          self.client = yield kurentoClient(self.streamConfig.ws_uri);
 
         self.pipeline = yield self.client.create("MediaPipeline");
 
@@ -173,7 +183,6 @@ class VideoRecording {
         self.webRtcPeer.processAnswer(sdpAnswer);
 
         yield self.player.play();
-
       } catch (e) {
         console.log(e);
         self.onError(e);
@@ -186,7 +195,7 @@ class VideoRecording {
       console.log(error);
       this.stopRecording();
       setTimeout(() => {
-        if(this.interval){
+        if (this.interval) {
           this.startRecordingSingleSessionWithInterval(this.interval);
         }
       }, 300);
@@ -194,15 +203,15 @@ class VideoRecording {
   }
 
   stopRecording() {
-  if (this.webRtcPeer) {
-    this.webRtcPeer.dispose();
-    this.webRtcPeer = null;
+    if (this.webRtcPeer) {
+      this.webRtcPeer.dispose();
+      this.webRtcPeer = null;
+    }
+    if (this.pipeline) {
+      this.pipeline.release();
+      this.pipeline = null;
+    }
   }
-  if(this.pipeline){
-    this.pipeline.release();
-    this.pipeline = null;
-  }
-}
 
   startRecordingSingleSessionWithInterval(interval = 30000) {
     if (typeof interval !== "number" || interval < 30000) {
@@ -214,14 +223,24 @@ class VideoRecording {
     const self = this;
     setInterval(() => {
       console.log("retry");
-      if (self.recorder && self.pipeline && self.webRtcPeer) {
-        self.recorder.stop();
-        self.pipeline.release();
-        self.webRtcPeer.dispose();
+      if (self.recorder || self.pipeline || self.webRtcPeer) {
+        self.stopRecording();
       }
       setTimeout(() => {
         self.startRecordingSingleSession();
       }, 300);
     }, interval + 300);
+  }
+
+  recordAndPlaySessionWithTimeout(timeout = 10000, videoOutput) {
+    if (typeof timeout !== "number" || timeout < 10000) {
+      throw "Timeout for single session must be more than or equal to 10sec.";
+    }
+    this.timeout = timeout;
+    this.startRecordingSingleSession();
+    const self = this;
+    setTimeout(() => {
+      self.stopAndPlayVideo(videoOutput);
+    }, timeout + 300); // extra buffer of 300ms
   }
 }
