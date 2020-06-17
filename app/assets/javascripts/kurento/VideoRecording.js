@@ -1,10 +1,10 @@
 class VideoRecording {
-  constructor(
+  constructor({
     event,
     user,
     inputVideoElmId = false,
-    proctoringDataElmId = "proctoring-data"
-  ) {
+    proctoringDataElmId = "proctoring-data",
+  }) {
     this.webRtcPeer;
     this.client;
     this.pipeline;
