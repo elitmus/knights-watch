@@ -24,6 +24,45 @@ Future plans:
 
 now `startRecordingSingleSession(eventId, userId)` javascript method will be available at the global scope which can be called when the session needs to be recorded. Both eventId and userId are required paramaeters for now.
 
+#### Available API for recorder
+
+HTML if want to show video to user ids can be passed to Object.
+```html
+<video id="videoInput" autoplay width="480px" height="360px" poster="img/webrtc.png" controls></video>
+<video id="videoOutput" autoplay width="480px" height="360px" poster="img/webrtc.png" controls></video>
+```
+
+```Javascript
+const options = {
+  event, // unique event
+  user, // unique user
+  inputVideoElmId, // Id for video element to preview while recording, default: false
+  proctoringDataElmId, // Id to look for proctoring data like media url and appName, default: 'proctoring-data'
+}
+
+const videoRecorder = new VideoRecording(options);
+
+// Record entire session without intervals, browser and server will try to save video for entire session in one file
+videoRecorder.startRecordingSingleSession();
+
+// Play recorded video
+videoRecorder.playVideo(elmId); // Id to show the recorded video in element, default elmId= 'videoOutput'
+
+// Stop and play video
+videoRecorder.stopAndPlayVideo(elmID); // Id to show the recorded video in element, default elmId= 'videoOutput'
+
+// Stop recording at any point
+videoRecorder.stopRecording();
+
+// Save videos in intervals
+videoRecorder.startRecordingSingleSessionWithInterval(interval); // save videos in intervals, default and minimum session = 30000 = 30sec.
+
+// Record video for specific time
+// Can be used for viva type questions where by using this we can specify timing for each question.
+videoRecorder.recordAndPlaySessionWithTimeout(timeout); // default timeout = 10000 = 10 sec minimum.
+
+```
+
 ## Installation
 Add this line to your application's Gemfile:
 
