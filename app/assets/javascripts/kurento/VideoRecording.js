@@ -51,6 +51,14 @@ class VideoRecording {
 
       webRtcPeer.addIceCandidate(candidate, onerror);
     });
+    webRtcEp.on("ConnectionStateChanged", (event) => {
+      if (event.newState === "DISCONNECTED") {
+        this.connectionStatus = null;
+      } else {
+        this.connectionStatus = event.newState;
+      }
+      this.clearTimeDilation();
+    });
   }
 
   startRecordingSingleSession() {
@@ -211,6 +219,10 @@ class VideoRecording {
       this.pipeline.release();
       this.pipeline = null;
     }
+    if (this.recorder) {
+      this.recorder.stop();
+      this.recorder = null;
+    }
   }
 
   startRecordingSingleSessionWithInterval(interval = 30000) {
@@ -232,15 +244,33 @@ class VideoRecording {
     }, interval + 300);
   }
 
-  recordAndPlaySessionWithTimeout(timeout = 10000, videoOutput) {
+  recordAndPlaySessionWithTimeout(timeout = 10000, videInput, videoOutput) {
     if (typeof timeout !== "number" || timeout < 10000) {
       throw "Timeout for single session must be more than or equal to 10sec.";
     }
-    this.timeout = timeout;
+    if (videInput) {
+      this.inputVideoElm = document.getElementById(videInput);
+      this.showInputVideo = true;
+    }
     this.startRecordingSingleSession();
-    const self = this;
+    this.setupTimeDilation();
     setTimeout(() => {
-      self.stopAndPlayVideo(videoOutput);
-    }, timeout + 300); // extra buffer of 300ms
+      this.stopAndPlayVideoAfterTimeAddition(videoOutput);
+    }, timeout); // extra buffer of 300ms
+  }
+
+  stopAndPlayVideoAfterTimeAddition(videoOutput) {
+    setTimeout(() => this.stopAndPlayVideo(videoOutput), this.timeDilation);
+  }
+
+  setupTimeDilation() {
+    this.timeDilation = 0;
+    this.timeDilationInterval = setInterval(() => {
+      this.timeDilation += 1000;
+    }, 1000);
+  }
+
+  clearTimeDilation() {
+    if (this.timeDilationInterval) clearInterval(this.timeDilationInterval);
   }
 }
