@@ -13,6 +13,7 @@ class VideoRecording {
     this.player;
     this.eventName = event;
     this.user = user;
+    this.retryCount = 0;
     if (this.inputVideoElmId) {
       this.inputVideoElm = document.getElementById(inputVideoElmId);
       this.showInputVideo = true;
@@ -199,15 +200,24 @@ class VideoRecording {
     if (error) {
       console.error(error);
       this.stopRecording();
-      setTimeout(() => {
-        if (this.interval) {
-          this.startRecordingSingleSessionWithInterval(this.interval);
-        }
-      }, 300);
+      this.retryCount += 1;
+      if(this.retryCount < 5) {
+        setTimeout(() => {
+          if (this.interval) {
+            this.startRecordingSingleSessionWithInterval(this.interval);
+          }
+        }, 1000 * this.retryCount);
+      } else {
+        throw "Something went wrong with video recording.";
+      }
     }
   }
 
   stopRecording() {
+    if (this.recorder) {
+      this.recorder.stop();
+      this.recorder = null;
+    }
     if (this.webRtcPeer) {
       this.webRtcPeer.dispose();
       this.webRtcPeer = null;
@@ -215,10 +225,6 @@ class VideoRecording {
     if (this.pipeline) {
       this.pipeline.release();
       this.pipeline = null;
-    }
-    if (this.recorder) {
-      this.recorder.stop();
-      this.recorder = null;
     }
   }
 
