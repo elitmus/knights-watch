@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    proctoring (0.3.0)
+    proctoring (0.3.1)
       rails (~> 6.0.0, >= 6.0.0.0)
 
 GEM
