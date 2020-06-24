@@ -1,12 +1,12 @@
 <%= stylesheet_link_tag "videojs/videojs-playlist-ui" %>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.8.3/video-js.min.css" />
-<div class="container-fluid">
+<div class="container-fluid" style="max-height: 60vh;overflow: scroll;">
   <div class="row"
     id="video-player-proctoring"
     data-default-thumbnail="<%= asset_url('proctoring/poster.png')%>"
     style="background: #202020"
   >
-    <div class="col-xs-12 col-md-8" style="padding-left: 0">
+    <div class="col-xs-12 col-md-8" style="padding-left: 0;scale: ;max-height: 60vh;">
       <video
         id="<%= defined?(video_js_id) != nil ? video_js_id : 'preview-player'%>"
         class="video-js vjs-16-9"
@@ -25,10 +25,10 @@
         </p>
       </video>
     </div>
-    <div class="col-xs-12 col-md-4" style="padding: 0">
+    <div class="col-xs-12 col-md-4" style="max-height: 60vh;">
       <div class="row">
-        <div class="col-xs-8">
-          <div class="vjs-playlist">
+        <div class="col-xs-8" style="overflow: scroll;">
+          <div class="vjs-playlist" style="height: 60vh;">
         </div>
       </div>
     </div>
