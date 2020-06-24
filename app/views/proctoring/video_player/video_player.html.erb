@@ -6,9 +6,9 @@
     data-default-thumbnail="<%= asset_url('proctoring/poster.png')%>"
     style="background: #202020"
   >
-    <div class="col-xs-9" style="padding: 0">
+    <div class="col-xs-9" style="padding-left: 0">
       <video
-        id="preview-player"
+        id="<%= defined?(video_js_id) != nil ? video_js_id : 'preview-player'%>"
         class="video-js vjs-fluid"
         controls
         preload="auto"

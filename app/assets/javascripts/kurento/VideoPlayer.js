@@ -1,21 +1,25 @@
 class VideoPlayer {
-  constructor(playlist) {
-    this.player = videojs('preview-player', {
-      fluid: true
+  constructor(elementId='preview-player', playlist) {
+    this.player = videojs(elementId, {
+      fluid: true,
     });
     const defaultDataEl = document.getElementById('video-player-proctoring');
-    console.log(defaultDataEl.dataset.defaultThumbnail);
     if(defaultDataEl && defaultDataEl.dataset.defaultThumbnail) {
-      this.playlist = playlist.map((list) => {
-        console.log(list)
-        if(!list.thumbnail) {
-          list.thumbnail = [{ src: defaultDataEl.dataset.defaultThumbnail }];
-        }
-        console.log(list)
-        return list;
-      })
+      this.thumbnail = defaultDataEl.dataset.defaultThumbnail;
     }
-    console.log(this.playlist);
+  }
+
+  playPlaylist(playlist) {
+    if (this.thumbnail) {
+      this.playlist = playlist.map((list) => {
+        if (!list.thumbnail) {
+          list.thumbnail = [{ src: this.thumbnail }];
+        }
+        return list;
+      });
+    } else {
+      this.playlist = playlist;
+    }
     this.player.playlist(this.playlist);
     // playlist structure
     // [{
@@ -44,7 +48,9 @@ class VideoPlayer {
     //   ],
     //   thumbnail: [{ src: "http://media.w3.org/2010/05/sintel/poster.png" }],
     // }];
+    // populate playlist UI
     this.player.playlistUi();
+    // Auto advance one video after another
     this.player.playlist.autoadvance(0);
   }
 
