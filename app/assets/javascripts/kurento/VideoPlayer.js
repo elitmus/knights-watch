@@ -54,4 +54,10 @@ class VideoPlayer {
     this.player.playlist.autoadvance(0);
   }
 
+  pauseVideo() {
+    if (this.player) {
+      this.player.pause();
+    }
+  }
+
 }
