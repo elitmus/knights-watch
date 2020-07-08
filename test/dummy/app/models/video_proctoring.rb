@@ -1,0 +1,2 @@
+class VideoProctoring < ApplicationRecord
+end

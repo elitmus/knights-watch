@@ -14,7 +14,7 @@ class VideoRecording {
     this.eventName = event;
     this.user = user;
     this.retryCount = 0;
-    if (this.inputVideoElmId) {
+    if (inputVideoElmId) {
       this.inputVideoElm = document.getElementById(inputVideoElmId);
       this.showInputVideo = true;
     }
@@ -32,8 +32,11 @@ class VideoRecording {
       }/kurento`,
       ice_servers: undefined,
     };
-    this.onStartOffer = this.onStartOffer.bind(this);
-    this.onPlayOffer = this.onPlayOffer.bind(this);
+    // this.onStartOffer = this.onStartOffer.bind(this);
+    // this.onPlayOffer = this.onPlayOffer.bind(this);
+    this.onOfferGenerate = this.onOfferGenerate.bind(this);
+    this.onOfferGenerateWithPlay = this.onOfferGenerateWithPlay.bind(this);
+    this.onOffer = this.onOffer.bind(this);
   }
 
   setIceCandidateCallbacks(webRtcPeer, webRtcEp, onerror) {
@@ -94,43 +97,89 @@ class VideoRecording {
       function (error) {
         if (error) return self.onError(error);
 
-        this.generateOffer(self.onStartOffer);
+        this.generateOffer(self.onOffer);
       }
     );
   }
 
-  onStartOffer(error, sdpOffer) {
-    const self = this;
-    if (error) return self.onError(error);
+  onOfferGenerate(error, offer) {
+    this.onOffer(error, offer);
+  }
 
-    co(function* () {
-      try {
-        if (!self.client)
-          self.client = yield kurentoClient(self.streamConfig.ws_uri);
+  onOfferGenerateWithPlay(error, offer) {
+    this.onOffer(error, offer, true);
+  }
 
-        self.pipeline = yield self.client.create("MediaPipeline");
+  onOffer(error, offer, play = false) {
+    self = this;
+    try {
+      if (error) return this.onError(error);
+      console.log("Offer...");
 
-        let webRtc = yield self.pipeline.create("WebRtcEndpoint");
-        self.setIceCandidateCallbacks(self.webRtcPeer, webRtc, self.onError);
+      kurentoClient(self.streamConfig.ws_uri, function (error, client) {
+        if (error) return self.onError(error);
 
-        self.recorder = yield self.pipeline.create("RecorderEndpoint", {
-          uri: self.streamConfig.file_uri,
+        self.client = client;
+
+        client.create("MediaPipeline", function (error, pipeline) {
+          if (error) return self.onError(error);
+
+          self.pipeline = pipeline;
+
+          console.log("Got MediaPipeline");
+
+          var elements = [
+            {
+              type: "RecorderEndpoint",
+              params: { uri: self.streamConfig.file_uri },
+            },
+            { type: "WebRtcEndpoint", params: {} },
+            { type: "PlayerEndpoint", params: {uri: self.streamConfig.file_uri } },
+          ];
+
+          pipeline.create(elements, function (error, elements) {
+            if (error) return self.onError(error);
+
+            self.recorder = elements[0];
+            let webRtc = elements[1];
+
+            self.setIceCandidateCallbacks(
+              self.webRtcPeer,
+              webRtc,
+              self.onError
+            );
+
+            webRtc.processOffer(offer, function (error, answer) {
+              if (error) return self.onError(error);
+
+              console.log("offer");
+
+              webRtc.gatherCandidates(self.onError);
+              self.webRtcPeer.processAnswer(answer);
+            });
+
+            client.connect(webRtc, webRtc, function (error) {
+              if (error) {
+                return self.onError(error);
+              }
+
+              client.connect(webRtc, self.recorder, function (error) {
+                console.log("Connected");
+
+                self.recorder.record(function (error) {
+                  if (error) return self.onError(error);
+
+                  console.log("record");
+                });
+              });
+            });
+          });
         });
-
-        yield webRtc.connect(self.recorder);
-        yield webRtc.connect(self.webRtc);
-
-        yield self.recorder.record();
-
-        let sdpAnswer = yield webRtc.processOffer(sdpOffer);
-        webRtc.gatherCandidates(self.onError);
-        self.webRtcPeer.processAnswer(sdpAnswer);
-
-        // setStatus(CALLING);
-      } catch (e) {
-        self.onError(e);
-      }
-    })();
+      });
+    } catch (error) {
+      console.log(error)
+      this.onError(error);
+    }
   }
 
   playVideo(elm = "videoOutput") {
@@ -153,7 +202,7 @@ class VideoRecording {
       function (error) {
         if (error) return onError(error);
 
-        this.generateOffer(self.onPlayOffer);
+        this.generateOffer(self.onOffer);
       }
     );
   }
@@ -164,7 +213,7 @@ class VideoRecording {
   }
 
   onPlayOffer(error, sdpOffer) {
-    const self = this;
+    console.log(self)
     if (error) return self.onError(error);
 
     co(function* () {
@@ -201,7 +250,7 @@ class VideoRecording {
       console.error(error);
       this.stopRecording();
       this.retryCount += 1;
-      if(this.retryCount < 5) {
+      if (this.retryCount < 5) {
         setTimeout(() => {
           if (this.interval) {
             this.startRecordingSingleSessionWithInterval(this.interval);

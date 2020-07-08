@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Video Proctorings</h1>
+
+<%= render template: 'proctoring/video_streamings/_video_recording.html.erb'%>
+<video id="videoInput" controls autoplay width="480px" height="360px"poster="<%= asset_url('proctoring/poster.png')%>"></video>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const videoRecorder = new VideoRecording({event: 'event', user: 'user', inputVideoElmId: 'videoInput'});
+    window.videoRecorder = videoRecorder;
+    videoRecorder.startRecordingSingleSessionWithInterval(1000 * 60 * 1);
+  });
+</script>

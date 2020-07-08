@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_27_045158) do
+ActiveRecord::Schema.define(version: 2020_07_08_072523) do
 
   create_table "proctoring_video_streaming_rooms", force: :cascade do |t|
     t.string "room", limit: 38, null: false
@@ -31,6 +31,11 @@ ActiveRecord::Schema.define(version: 2020_05_27_045158) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["channel"], name: "index_proctoring_video_streamings_on_channel", unique: true
     t.index ["user_id", "event_id"], name: "index_proctoring_video_streamings_on_user_id_and_event_id"
+  end
+
+  create_table "video_proctorings", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
 end
