@@ -4,6 +4,7 @@ class VideoRecording {
     user,
     inputVideoElmId = false,
     proctoringDataElmId = "proctoring-data",
+    iceServers = undefined,
   }) {
     this.webRtcPeer;
     this.client;
@@ -30,7 +31,7 @@ class VideoRecording {
       ws_uri: `ws${location.protocol === "http:" ? "" : "s"}://${
         this.mediaServerUrl
       }/kurento`,
-      ice_servers: undefined,
+      ice_servers: iceServers,
     };
     this.onStartOffer = this.onStartOffer.bind(this);
     this.onPlayOffer = this.onPlayOffer.bind(this);
@@ -81,7 +82,7 @@ class VideoRecording {
     }
 
     if (this.streamConfig.ice_servers) {
-      console.log("Use ICE servers: " + this.streamConfig.ice_servers);
+      console.log("Use ICE servers: ", this.streamConfig.ice_servers);
       options.configuration = {
         iceServers: this.streamConfig.ice_servers,
       };
@@ -201,7 +202,7 @@ class VideoRecording {
       console.error(error);
       this.stopRecording();
       this.retryCount += 1;
-      if(this.retryCount < 5) {
+      if (this.retryCount < 5) {
         setTimeout(() => {
           if (this.interval) {
             this.startRecordingSingleSessionWithInterval(this.interval);
