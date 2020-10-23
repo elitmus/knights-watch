@@ -23,15 +23,21 @@ class VideoRecording {
     if (proctoringData) {
       this.mediaServerUrl = proctoringData.dataset.mediaServerUrl;
       this.appName = proctoringData.dataset.appName;
+      try {
+        this.iceServers = JSON.parse(proctoringData.dataset.iceServers);
+      } catch(error) {
+        console.log("Ice servers not defined!");
+      }
     } else {
       this.mediaServerUrl = window.location.host;
       this.appName = window.location.host;
+      this.iceServers = undefined;
     }
     this.streamConfig = {
       ws_uri: `ws${location.protocol === "http:" ? "" : "s"}://${
         this.mediaServerUrl
       }/kurento`,
-      ice_servers: iceServers,
+      ice_servers: this.iceServers,
     };
     this.onStartOffer = this.onStartOffer.bind(this);
     this.onPlayOffer = this.onPlayOffer.bind(this);
@@ -82,7 +88,7 @@ class VideoRecording {
     }
 
     if (this.streamConfig.ice_servers) {
-      console.log("Use ICE servers: ", this.streamConfig.ice_servers);
+      // console.log("Use ICE servers: ", this.streamConfig.ice_servers);
       options.configuration = {
         iceServers: this.streamConfig.ice_servers,
       };
