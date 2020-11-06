@@ -23,7 +23,7 @@ function videoRecordingUsingSignalingServer(props) {
     sendMessage(message);
   }
 
-  function socetListener(message) {
+  function socketListener(message) {
     console.log("Message arrived", message);
 
     switch (message.event) {
@@ -42,7 +42,7 @@ function videoRecordingUsingSignalingServer(props) {
     }
   }
 
-  socket.on("signaling-message", socetListener);
+  socket.on("signaling-message", socketListener);
 
   function sendMessage(message) {
     console.log("sending " + message.event + " message to server");
@@ -57,7 +57,7 @@ function videoRecordingUsingSignalingServer(props) {
     };
     sendMessage(message);
     currentRtcPeer.dispose();
-    socket.removeListener("signaling-message", socetListener);
+    socket.removeListener("signaling-message", socketListener);
     videoRecordingUsingSignalingServer(props);
   }
 
@@ -67,9 +67,6 @@ function videoRecordingUsingSignalingServer(props) {
   };
 
   function receiveVideo(userIdWs, userNameWs) {
-    // if (userNameWs === userName && !userNameWs.startsWith("proctor-")) return;
-    if (!userName.startsWith("proctor-") && !userNameWs.startsWith("proctor-"))
-      return;
     let video = document.createElement("video");
     let div = document.createElement("div");
     div.className = "videoContainer";
@@ -197,9 +194,9 @@ function videoRecordingUsingSignalingServer(props) {
       }
     );
 
-    existingUsers.forEach(function (element) {
-      receiveVideo(element.id, element.name);
-    });
+    // existingUsers.forEach(function (element) {
+    //   receiveVideo(element.id, element.name);
+    // });
 
     currentRtcPeer = user.rtcPeer;
 
