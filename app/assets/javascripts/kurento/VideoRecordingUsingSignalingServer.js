@@ -23,7 +23,7 @@ function videoRecordingUsingSignalingServer(props) {
     sendMessage(message);
   }
 
-  socket.on("signaling-message", (message) => {
+  function socetListener(message) {
     console.log("Message arrived", message);
 
     switch (message.event) {
@@ -40,7 +40,9 @@ function videoRecordingUsingSignalingServer(props) {
         addIceCandidate(message.userId, message.candidate);
         break;
     }
-  });
+  }
+
+  socket.on("signaling-message", socetListener);
 
   function sendMessage(message) {
     console.log("sending " + message.event + " message to server");
@@ -48,14 +50,16 @@ function videoRecordingUsingSignalingServer(props) {
   }
 
   
-  // function stopRecordingAndRestart() {
-  //   let message = {
-  //     event: "stopRecordingAndRestart",
-  //     appName,
-  //   };
-  //   sendMessage(message);
-  //   currentRtcPeer.dispose();
-  // }
+  function stopRecordingAndRestart() {
+    let message = {
+      event: "stopRecordingAndRestart",
+      appName,
+    };
+    sendMessage(message);
+    currentRtcPeer.dispose();
+    socket.removeListener("signaling-message", socetListener);
+    videoRecordingUsingSignalingServer(props);
+  }
 
   window.onbeforeunload = function () {
     currentRtcPeer.dispose();
@@ -199,9 +203,9 @@ function videoRecordingUsingSignalingServer(props) {
 
     currentRtcPeer = user.rtcPeer;
 
-    // setInterval(() => {
-    //   stopRecordingAndRestart();
-    // }, 10*1000);
+    setTimeout(() => {
+      stopRecordingAndRestart();
+    }, 5*60*1000);
   }
 
   function onReceiveVideoAnswer(senderId, sdpAnswer) {
