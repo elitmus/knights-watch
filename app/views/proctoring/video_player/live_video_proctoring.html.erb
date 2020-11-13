@@ -1,3 +1,12 @@
+<style>
+  #proctoringVideos {
+    display: flex;
+  }
+  #proctoringVideos .videoContainer video {
+    transform: scaleX(-1);
+    width: 320px;
+  }
+</style>
 <%= content_tag :div, '', id: 'proctoring-data', data: { media_server_url: Proctoring.media_server_url, app_name: Proctoring.app_name } %>
 
 <div class="container-fluid">
@@ -30,11 +39,13 @@
   <div class="row border no-gutters mt-4 h-100">
     <div class="col-3 border-right bg-gray" style="height: 100vh;">
       <div class="card-header">
-        <h5>List of connected candidates</h5>
+        <h5 class="text-dark">List of connected candidates</h5>
       </div>
       <div class="bg-light" id="connected-users-list"></div>
     </div>
-    <div class="col-9" style="height: 100vh;"></div>
+    <div class="col-9" style="overflow: scroll;height: 100vh;">
+      <div id="proctoringVideos"></div>
+    </div>
   </div>
 </div>
 

@@ -3,7 +3,7 @@ function startLiveVideoProctoring(props) {
   const connectedUsers = document.getElementById("connected-users");
   const connectedUsersList = document.getElementById("connected-users-list");
   const updateTimer = 1 * 5 * 1000; // 1 minute
-  const { socket, event } = props;
+  const { socket, event, user } = props;
 
   function sendMessage(message) {
     console.log("sending " + message.event + " message to server");
@@ -11,7 +11,6 @@ function startLiveVideoProctoring(props) {
   }
 
   function getLiveVideoProctoringAnalyticsData(props) {
-    let socket = props.socket;
     let roomName = props.event.toString();
     let message = {
       event: "analytics-data",
@@ -35,25 +34,35 @@ function startLiveVideoProctoring(props) {
     let roomKeys;
     if (roomInfo) {
       roomKeys = Object.keys(roomInfo).length;
+      if (Object.keys(roomInfo).includes[user]) roomKeys -= 1;
     } else {
       roomKeys = 0;
     }
     connectedUsers.innerText = roomKeys;
 
     // List update
+    let div = document.createElement("div");
+    div.className = "list-group";
+    listClass = "list-group-item list-group-item-action rounded-0";
     if (roomInfo) {
-      let div = document.createElement("div");
-      div.className = "list-group";
       Object.keys(roomInfo).forEach((key) => {
-        let link = document.createElement('a');
-        const text = document.createTextNode(key);
-        link.appendChild(text);
-        link.className = "list-group-item list-group-item-action rounded-0";
-        div.appendChild(link);
+        if (key !== user) {
+          let link = document.createElement('a');
+          const text = document.createTextNode(key);
+          link.appendChild(text);
+          link.className = listClass;
+          div.appendChild(link);
+        }
       })
-      connectedUsersList.innerHTML = "";
-      connectedUsersList.appendChild(div);
+    } else {
+      let link = document.createElement("a");
+      const text = document.createTextNode("No users connected!");
+      link.appendChild(text);
+      link.className = listClass;
+      div.appendChild(link);
     }
+    connectedUsersList.innerHTML = "";
+    connectedUsersList.appendChild(div);
 
   }
 
@@ -62,4 +71,5 @@ function startLiveVideoProctoring(props) {
   setInterval(() => {
     getLiveVideoProctoringAnalyticsData({ socket, event });
   }, updateTimer);
+  liveVideoUsingSignalingServer(props);
 }

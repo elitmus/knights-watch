@@ -68,7 +68,6 @@ function liveVideoUsingSignalingServer(props) {
   window.onbeforeunload = function () {
     currentRtcPeer.dispose();
     socket.disconnect();
-    alert('sdsd')
   };
 
   function receiveVideo(userIdWs, userNameWs) {
@@ -150,11 +149,8 @@ function liveVideoUsingSignalingServer(props) {
     let constraints = {
       audio: true,
       video: {
-        mandatory: {
-          maxWidth: 320,
-          maxFrameRate: 15,
-          minFrameRate: 5,
-        },
+        width: { min: 320, ideal: 320, max: 640 },
+        height: { min: 240, ideal: 240, max: 480 },
       },
     };
 
