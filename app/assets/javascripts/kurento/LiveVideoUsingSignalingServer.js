@@ -1,4 +1,4 @@
-function videoRecordingUsingSignalingServer(props) {
+function liveVideoUsingSignalingServer(props) {
   // variables
   let roomName;
   let userName;
@@ -7,6 +7,9 @@ function videoRecordingUsingSignalingServer(props) {
   let currentRtcPeer;
 
   let socket = props.socket;
+  var divMeetingRoom = document.getElementById(
+    props.videoDivId || "proctoringVideos"
+  );
 
   let proctoringData = document.getElementById("proctoring-data");
   appName = proctoringData.dataset.appName;
@@ -28,9 +31,9 @@ function videoRecordingUsingSignalingServer(props) {
     console.log("Message arrived", message);
 
     switch (message.event) {
-      // case "newParticipantArrived":
-      //   receiveVideo(message.userId, message.userName);
-      //   break;
+      case "newParticipantArrived":
+        receiveVideo(message.userId, message.userName);
+        break;
       case "existingParticipants":
         onExistingParticipants(message.userId, message.existingUsers);
         break;
@@ -59,12 +62,13 @@ function videoRecordingUsingSignalingServer(props) {
     sendMessage(message);
     currentRtcPeer.dispose();
     socket.removeListener("signaling-message", socketListener);
-    videoRecordingUsingSignalingServer(props);
+    liveVideoUsingSignalingServer(props);
   }
 
   window.onbeforeunload = function () {
     currentRtcPeer.dispose();
     socket.disconnect();
+    alert('sdsd')
   };
 
   function receiveVideo(userIdWs, userNameWs) {
@@ -78,7 +82,7 @@ function videoRecordingUsingSignalingServer(props) {
     name.appendChild(document.createTextNode(userNameWs));
     div.appendChild(video);
     div.appendChild(name);
-    // divMeetingRoom.appendChild(div);
+    divMeetingRoom.appendChild(div);
 
     const onOffer = (_err, offer, _wp) => {
       console.log("On Offer");
@@ -195,9 +199,9 @@ function videoRecordingUsingSignalingServer(props) {
       }
     );
 
-    // existingUsers.forEach(function (element) {
-    //   receiveVideo(element.id, element.name);
-    // });
+    existingUsers.forEach(function (element) {
+      receiveVideo(element.id, element.name);
+    });
 
     currentRtcPeer = user.rtcPeer;
 
@@ -214,3 +218,4 @@ function videoRecordingUsingSignalingServer(props) {
     participants[userId].rtcPeer.addIceCandidate(candidate);
   }
 };
+

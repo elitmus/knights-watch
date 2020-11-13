@@ -1,0 +1,38 @@
+<%= content_tag :div, '', id: 'proctoring-data', data: { media_server_url: Proctoring.media_server_url, app_name: Proctoring.app_name } %>
+
+<div class="container-fluid">
+  <div class="row text-white">
+    <div class="col-3">
+      <div class="card bg-danger shadow">
+        <div class="card-body">
+          <span class="data-title h6">Event Id</span>
+          <h1 class="display-4 text-uppercase" id="connected-event">eg</h1>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="card bg-primary shadow">
+        <div class="card-body">
+          <span class="data-title h6">Connected Users</span>
+          <h1 class="display-4 text-uppercase" id="connected-users">0</h1>
+        </div>
+      </div>
+    </div>
+    <div class="col-3 d-none">
+      <div class="card bg-warning shadow">
+        <div class="card-body">
+          <span class="data-title h6">Connected Users</span>
+          <h1 class="display-4 text-uppercase">23</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4"></div>
+    <div class="col-8"></div>
+  </div>
+</div>
+
+<%= javascript_include_tag 'kurento/kurento-utils' %>
+<%= javascript_include_tag "kurento/LiveVideoUsingSignalingServer" %>
+<%= javascript_include_tag "kurento/videoProctoring" %>
