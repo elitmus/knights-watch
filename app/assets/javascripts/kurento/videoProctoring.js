@@ -1,7 +1,8 @@
 function startLiveVideoProctoring(props) {
   const connectedEvent = document.getElementById("connected-event");
   const connectedUsers = document.getElementById("connected-users");
-  const updateTimer = 1 * 60 * 1000; // 1 minute
+  const connectedUsersList = document.getElementById("connected-users-list");
+  const updateTimer = 1 * 5 * 1000; // 1 minute
   const { socket, event } = props;
 
   function sendMessage(message) {
@@ -38,6 +39,22 @@ function startLiveVideoProctoring(props) {
       roomKeys = 0;
     }
     connectedUsers.innerText = roomKeys;
+
+    // List update
+    if (roomInfo) {
+      let div = document.createElement("div");
+      div.className = "list-group";
+      Object.keys(roomInfo).forEach((key) => {
+        let link = document.createElement('a');
+        const text = document.createTextNode(key);
+        link.appendChild(text);
+        link.className = "list-group-item list-group-item-action rounded-0";
+        div.appendChild(link);
+      })
+      connectedUsersList.innerHTML = "";
+      connectedUsersList.appendChild(div);
+    }
+
   }
 
   socket.on("signaling-message", socketListener);
