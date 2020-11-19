@@ -40,6 +40,9 @@ function liveVideoUsingSignalingServer(props) {
       case "receiveVideoAnswer":
         onReceiveVideoAnswer(message.senderId, message.sdpAnswer);
         break;
+      case "participantLeft":
+        setOffline(message.userName);
+        break;
       case "candidate":
         addIceCandidate(message.userId, message.candidate);
         break;
@@ -70,18 +73,43 @@ function liveVideoUsingSignalingServer(props) {
     socket.disconnect();
   };
 
+  function setOffline(userid) {
+    const container = document.getElementById(`participant-video-${userid}`);
+    if(container) {
+      container.classList.remove("border-success");
+      container.classList.add("border-danger");
+      const callButton = container.querySelector(".connect-candidate");
+      callButton.disabled = true;
+    }
+  }
+
   function receiveVideo(userIdWs, userNameWs) {
-    let video = document.createElement("video");
-    let div = document.createElement("div");
-    div.className = "videoContainer";
-    div.id = `participant-video-${userIdWs}-${userNameWs}`;
-    let name = document.createElement("div");
-    video.id = userIdWs;
-    video.autoplay = true;
-    name.appendChild(document.createTextNode(userNameWs));
-    div.appendChild(video);
-    div.appendChild(name);
-    divMeetingRoom.appendChild(div);
+    const checkContainer = document.getElementById(
+      `participant-video-${userNameWs}`
+    );
+    let video, div;
+    if (checkContainer) {
+      div = checkContainer; 
+      const videoElm = checkContainer.querySelector('video');
+      video = videoElm;
+    } else {
+      const nodeToCopy = document.getElementById("sample-video-div").querySelector('div');
+      const newDiv = nodeToCopy.cloneNode(true);
+      div = newDiv;
+      video = newDiv.querySelector('video');
+      let name = newDiv.querySelector(".video-user-id");
+      name.innerText = userNameWs;
+      div.id = `participant-video-${userNameWs}`;
+      video.id = `video-elm-${userNameWs}`;
+      divMeetingRoom.appendChild(div);
+    }
+
+    if(div) {
+      div.classList.remove("border-danger");
+      div.classList.add("border-success");
+      const callButton = div.querySelector(".connect-candidate");
+      callButton.disabled = false;
+    }
 
     const onOffer = (_err, offer, _wp) => {
       console.log("On Offer");

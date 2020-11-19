@@ -2,9 +2,19 @@
   #proctoringVideos {
     display: flex;
   }
+  #proctoringVideos .videoContainer{
+    border-width: 5px;
+  }
   #proctoringVideos .videoContainer video {
     transform: scaleX(-1);
     width: 320px;
+    height: 240px;
+  }
+  .border-danger .status-online {
+    display: none;
+  }
+  .border-success .status-offline {
+    display: none;
   }
 </style>
 <%= content_tag :div, '', id: 'proctoring-data', data: { media_server_url: Proctoring.media_server_url, app_name: Proctoring.app_name } %>
@@ -46,6 +56,18 @@
     <div class="col-9" style="overflow: scroll;height: 100vh;">
       <div id="proctoringVideos"></div>
     </div>
+  </div>
+</div>
+
+<div id="sample-video-div" class="d-none">
+  <div class="videoContainer rounded-0 card" id="participant-video-">
+    <video id="video-elm-" autoplay="" controls=""></video>
+    <div class="card-body p-2">
+      <span class="text-dark m-0 h6"><strong>UserId: </strong><strong class="video-user-id">134112</strong></span>
+      <span class="status-online text-success">Online</span>
+      <span class="status-offline text-danger">Offline</span>
+    </div>
+    <button type="button" class="btn btn-success rounded-0 btn-block connect-candidate">Connect</button>
   </div>
 </div>
 
