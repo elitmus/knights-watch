@@ -34,7 +34,7 @@ function startLiveVideoProctoring(props) {
     let roomKeys;
     if (roomInfo) {
       roomKeys = Object.keys(roomInfo).length;
-      if (Object.keys(roomInfo).includes[user]) roomKeys -= 1;
+      if (Object.keys(roomInfo).includes(user)) roomKeys -= 1;
     } else {
       roomKeys = 0;
     }
