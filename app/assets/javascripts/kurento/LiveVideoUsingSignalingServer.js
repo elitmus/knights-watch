@@ -28,7 +28,7 @@ function liveVideoUsingSignalingServer(props) {
   }
 
   function socketListener(message) {
-    console.log("Message arrived", message);
+    // console.log("Message arrived", message);
 
     switch (message.event) {
       case "newParticipantArrived":
@@ -84,6 +84,8 @@ function liveVideoUsingSignalingServer(props) {
   }
 
   function receiveVideo(userIdWs, userNameWs) {
+    const currentUser = props.user;
+    if (userNameWs === currentUser) return;
     const checkContainer = document.getElementById(
       `participant-video-${userNameWs}`
     );
@@ -207,13 +209,13 @@ function liveVideoUsingSignalingServer(props) {
     };
 
     let options = {
-      localVideo: video,
-      mediaConstraints: constraints,
+      // localVideo: video,
+      // mediaConstraints: constraints,
       onicecandidate: onIceCandidate,
     };
 
     // This is for sending candidate
-    user.rtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
+    user.rtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
       options,
       function (err) {
         if (err) {
