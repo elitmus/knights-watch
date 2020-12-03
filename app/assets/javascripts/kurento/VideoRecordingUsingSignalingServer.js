@@ -212,7 +212,7 @@ function videoRecordingUsingSignalingServer(props) {
   }
 
   function addIceCandidate(userId, candidate) {
-    const user = participants[senderId];
+    const user = participants[userId];
     if (user) user.rtcPeer.addIceCandidate(candidate);
   }
 };
