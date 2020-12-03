@@ -28,7 +28,7 @@ function liveVideoUsingSignalingServer(props) {
   }
 
   function socketListener(message) {
-    // console.log("Message arrived", message);
+    console.log("Message arrived", message);
 
     switch (message.event) {
       case "newParticipantArrived":

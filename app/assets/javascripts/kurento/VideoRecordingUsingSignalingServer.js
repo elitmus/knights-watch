@@ -207,10 +207,12 @@ function videoRecordingUsingSignalingServer(props) {
   }
 
   function onReceiveVideoAnswer(senderId, sdpAnswer) {
-    participants[senderId].rtcPeer.processAnswer(sdpAnswer);
+    const user = participants[senderId];
+    if (user) user.rtcPeer.processAnswer(sdpAnswer);
   }
 
   function addIceCandidate(userId, candidate) {
-    participants[userId].rtcPeer.addIceCandidate(candidate);
+    const user = participants[senderId];
+    if (user) user.rtcPeer.addIceCandidate(candidate);
   }
 };
