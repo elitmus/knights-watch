@@ -3,6 +3,7 @@ function videoRecordingUsingSignalingServer(props) {
   let roomName;
   let userName;
   let appName;
+  let iceServers;
   let participants = {};
   let currentRtcPeer;
 
@@ -12,6 +13,12 @@ function videoRecordingUsingSignalingServer(props) {
   appName = proctoringData.dataset.appName;
   roomName = props.event.toString();
   userName = props.user.toString();
+
+  try {
+    iceServers = JSON.parse(proctoringData.dataset.iceServers);
+  } catch(error) {
+    console.log("Ice servers not defined!");
+  }
   if (roomName && userName) {
     let message = {
       event: "joinRoom",
@@ -117,6 +124,14 @@ function videoRecordingUsingSignalingServer(props) {
       onicecandidate: onIceCandidate,
     };
 
+    if (iceServers) {
+      options.configurations = {
+        iceServers: iceServers,
+      }
+    }
+
+    console.log('ICE server DATA on RECV ONLY')
+    console.log(iceServers)
     // This is for receving candidates
     user.rtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
       options,
@@ -183,6 +198,15 @@ function videoRecordingUsingSignalingServer(props) {
       mediaConstraints: constraints,
       onicecandidate: onIceCandidate,
     };
+
+    if (iceServers) {
+      options.configurations = {
+        iceServers: iceServers,
+      }
+    }
+
+    console.log('ICE server DATA on SEND ONLY')
+    console.log(iceServers)
 
     // This is for sending candidate
     user.rtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
