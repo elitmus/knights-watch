@@ -15,11 +15,12 @@ function liveVideoUsingSignalingServer(props) {
   appName = proctoringData.dataset.appName;
   roomName = props.event.toString();
   userName = props.user.toString();
+  adminUserName = userName + '-admin'
   if (roomName && userName) {
     let message = {
       event: "joinRoom",
       roomName,
-      userName,
+      userName: adminUserName,
       appName,
       extraInfo: {},
     };
@@ -78,14 +79,15 @@ function liveVideoUsingSignalingServer(props) {
     if(container) {
       container.classList.remove("border-success");
       container.classList.add("border-danger");
-      const callButton = container.querySelector(".connect-candidate");
-      callButton.disabled = true;
+      // const callButton = container.querySelector(".connect-candidate");
+      // callButton.disabled = true;
     }
   }
 
   function receiveVideo(userIdWs, userNameWs) {
     const currentUser = props.user;
-    if (userNameWs === currentUser) return;
+    // if (userNameWs === currentUser) return;
+    if (checkAdminUser(userNameWs)) return;
     const checkContainer = document.getElementById(
       `participant-video-${userNameWs}`
     );
@@ -103,14 +105,15 @@ function liveVideoUsingSignalingServer(props) {
       name.innerText = userNameWs;
       div.id = `participant-video-${userNameWs}`;
       video.id = `video-elm-${userNameWs}`;
+      video.style.display = 'none';
       divMeetingRoom.appendChild(div);
     }
 
     if(div) {
       div.classList.remove("border-danger");
       div.classList.add("border-success");
-      const callButton = div.querySelector(".connect-candidate");
-      callButton.disabled = false;
+      // const callButton = div.querySelector(".connect-candidate");
+      // callButton.disabled = false;
     }
 
     const onOffer = (_err, offer, _wp) => {
@@ -234,6 +237,10 @@ function liveVideoUsingSignalingServer(props) {
     setTimeout(() => {
       stopRecordingAndRestart();
     }, 5*60*1000);
+  }
+
+  function checkAdminUser(userName) {
+    return userName.split('-').includes('admin');
   }
 
   function onReceiveVideoAnswer(senderId, sdpAnswer) {

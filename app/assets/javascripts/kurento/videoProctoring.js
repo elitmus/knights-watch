@@ -1,7 +1,8 @@
 function startLiveVideoProctoring(props) {
   const connectedEvent = document.getElementById("connected-event");
-  const connectedUsers = document.getElementById("connected-users");
-  const connectedUsersList = document.getElementById("connected-users-list");
+  const connectedUsers = document.getElementById("connected-candidates");
+  const connectedAdminUsers = document.getElementById("connected-recruiters");
+  const connectedUsersList = document.getElementById("connected-candidates-list");
   const updateTimer = 1 * 5 * 1000; // 1 minute
   const { socket, event, user } = props;
 
@@ -31,27 +32,38 @@ function startLiveVideoProctoring(props) {
 
   function setUpAnalytics(roomInfo) {
     connectedEvent.innerText = event;
-    let roomKeys;
+    let candidateCount = 0;
+    let adminCount = 0;
     if (roomInfo) {
-      roomKeys = Object.keys(roomInfo).length;
-      if (Object.keys(roomInfo).includes(user)) roomKeys -= 1;
-    } else {
-      roomKeys = 0;
+      Object.keys(roomInfo).forEach((key) => {
+        if (checkAdminUser(key)) adminCount += 1;
+        else candidateCount += 1;
+      });
     }
-    connectedUsers.innerText = roomKeys;
-
+    //   roomKeys = Object.keys(roomInfo).length;
+    //   if (Object.keys(roomInfo).includes(user)) roomKeys -= 1;
+    // } else {
+    //   roomKeys = 0;
+    // }
+    connectedUsers.innerText = candidateCount;
+    connectedAdminUsers.innerText = adminCount;
     // List update
     let div = document.createElement("div");
     div.className = "list-group";
     listClass = "list-group-item list-group-item-action rounded-0";
     if (roomInfo) {
       Object.keys(roomInfo).forEach((key) => {
-        if (key !== user) {
+        if (!checkAdminUser(key)) {
           let link = document.createElement('a');
           const text = document.createTextNode(key);
           link.appendChild(text);
           link.className = listClass;
           div.appendChild(link);
+          link.addEventListener('click', () => {
+            const videoElm = document.getElementById(`video-elm-${key}`);
+            if (videoElm.style.display === 'none') videoElm.style.display = 'block';
+            else videoElm.style.display = 'none';
+          });
         }
       })
     } else {
@@ -63,7 +75,10 @@ function startLiveVideoProctoring(props) {
     }
     connectedUsersList.innerHTML = "";
     connectedUsersList.appendChild(div);
+  }
 
+  function checkAdminUser(userName) {
+    return userName.split('-').includes('admin');
   }
 
   socket.on("signaling-message", socketListener);
