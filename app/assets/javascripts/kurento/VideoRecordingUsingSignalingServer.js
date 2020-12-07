@@ -3,7 +3,6 @@ function videoRecordingUsingSignalingServer(props) {
   let roomName;
   let userName;
   let appName;
-  let iceServers;
   let participants = {};
   let currentRtcPeer;
   let iceServers = [];
