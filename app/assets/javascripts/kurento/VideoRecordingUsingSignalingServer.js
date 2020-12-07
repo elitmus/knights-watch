@@ -6,6 +6,7 @@ function videoRecordingUsingSignalingServer(props) {
   let iceServers;
   let participants = {};
   let currentRtcPeer;
+  let iceServers = [];
 
   let socket = props.socket;
 
@@ -15,7 +16,7 @@ function videoRecordingUsingSignalingServer(props) {
   userName = props.user.toString();
 
   try {
-    iceServers = JSON.parse(proctoringData.dataset.iceServers);
+    // iceServers = JSON.parse(proctoringData.dataset.iceServers);
   } catch(error) {
     console.log("Ice servers not defined!");
   }
@@ -47,6 +48,9 @@ function videoRecordingUsingSignalingServer(props) {
       case "candidate":
         addIceCandidate(message.userId, message.candidate);
         break;
+      case "turnServer":
+        setTurnServer(message.turnserver);
+        break;
     }
   }
 
@@ -57,6 +61,9 @@ function videoRecordingUsingSignalingServer(props) {
     socket.emit("signaling-message", message);
   }
 
+  function setTurnServer(turnServer) {
+    iceServers = turnServer;
+  }
   
   function stopRecordingAndRestart() {
     let message = {
