@@ -244,6 +244,8 @@ function liveVideoUsingSignalingServer(props) {
   }
 
   function onReceiveVideoAnswer(senderId, sdpAnswer) {
+    console.log(participants)
+    console.log(senderId)
     participants[senderId].rtcPeer.processAnswer(sdpAnswer);
   }
 
