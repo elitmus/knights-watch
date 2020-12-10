@@ -136,8 +136,8 @@ function videoRecordingUsingSignalingServer(props) {
       }
     }
 
-    console.log('ICE server DATA on RECV ONLY')
-    console.log(iceServers)
+    // console.log('ICE server DATA on RECV ONLY')
+    // console.log(iceServers)
     // This is for receving candidates
     user.rtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
       options,
@@ -211,8 +211,8 @@ function videoRecordingUsingSignalingServer(props) {
       }
     }
 
-    console.log('ICE server DATA on SEND ONLY')
-    console.log(iceServers)
+    // console.log('ICE server DATA on SEND ONLY')
+    // console.log(iceServers)
 
     // This is for sending candidate
     user.rtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
