@@ -3,7 +3,7 @@ function startLiveVideoProctoring(props) {
   const connectedUsers = document.getElementById("connected-candidates");
   const connectedAdminUsers = document.getElementById("connected-recruiters");
   const connectedUsersList = document.getElementById("connected-candidates-list");
-  const updateTimer = 1 * 5 * 1000; // 1 minute
+  const updateTimer = 5 * 1000; // 5 seconds
   const { socket, event, user } = props;
 
   function sendMessage(message) {
