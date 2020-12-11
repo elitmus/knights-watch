@@ -1,29 +1,26 @@
-function videoRecordingUsingSignalingServer(props) {
+function liveVideoUsingSignalingServer(props) {
   // variables
   let roomName;
   let userName;
   let appName;
   let participants = {};
   let currentRtcPeer;
-  let iceServers = [];
 
   let socket = props.socket;
+  var divMeetingRoom = document.getElementById(
+    props.videoDivId || "proctoringVideos"
+  );
 
   let proctoringData = document.getElementById("proctoring-data");
   appName = proctoringData.dataset.appName;
   roomName = props.event.toString();
   userName = props.user.toString();
-
-  try {
-    // iceServers = JSON.parse(proctoringData.dataset.iceServers);
-  } catch(error) {
-    console.log("Ice servers not defined!");
-  }
+  adminUserName = userName + '-admin'
   if (roomName && userName) {
     let message = {
       event: "joinRoom",
       roomName,
-      userName,
+      userName: adminUserName,
       appName,
       extraInfo: {},
     };
@@ -35,20 +32,20 @@ function videoRecordingUsingSignalingServer(props) {
     console.log("Message arrived", message);
 
     switch (message.event) {
-      // case "newParticipantArrived":
-      //   receiveVideo(message.userId, message.userName);
-      //   break;
+      case "newParticipantArrived":
+        receiveVideo(message.userId, message.userName);
+        break;
       case "existingParticipants":
         onExistingParticipants(message.userId, message.existingUsers);
         break;
       case "receiveVideoAnswer":
         onReceiveVideoAnswer(message.senderId, message.sdpAnswer);
         break;
+      case "participantLeft":
+        setOffline(message.userName);
+        break;
       case "candidate":
         addIceCandidate(message.userId, message.candidate);
-        break;
-      case "turnServer":
-        setTurnServer(message.turnserver);
         break;
     }
   }
@@ -60,9 +57,6 @@ function videoRecordingUsingSignalingServer(props) {
     socket.emit("signaling-message", message);
   }
 
-  function setTurnServer(turnServer) {
-    iceServers = turnServer;
-  }
   
   function stopRecordingAndRestart() {
     let message = {
@@ -72,7 +66,7 @@ function videoRecordingUsingSignalingServer(props) {
     sendMessage(message);
     currentRtcPeer.dispose();
     socket.removeListener("signaling-message", socketListener);
-    videoRecordingUsingSignalingServer(props);
+    liveVideoUsingSignalingServer(props);
   }
 
   window.onbeforeunload = function () {
@@ -80,18 +74,47 @@ function videoRecordingUsingSignalingServer(props) {
     socket.disconnect();
   };
 
+  function setOffline(userid) {
+    const container = document.getElementById(`participant-video-${userid}`);
+    if(container) {
+      container.classList.remove("border-success");
+      container.classList.add("border-danger");
+      // const callButton = container.querySelector(".connect-candidate");
+      // callButton.disabled = true;
+    }
+  }
+
   function receiveVideo(userIdWs, userNameWs) {
-    let video = document.createElement("video");
-    let div = document.createElement("div");
-    div.className = "videoContainer";
-    div.id = `participant-video-${userIdWs}-${userNameWs}`;
-    let name = document.createElement("div");
-    video.id = userIdWs;
-    video.autoplay = true;
-    name.appendChild(document.createTextNode(userNameWs));
-    div.appendChild(video);
-    div.appendChild(name);
-    // divMeetingRoom.appendChild(div);
+    const currentUser = props.user;
+    // if (userNameWs === currentUser) return;
+    if (checkAdminUser(userNameWs)) return;
+    const checkContainer = document.getElementById(
+      `participant-video-${userNameWs}`
+    );
+    let video, div;
+    if (checkContainer) {
+      div = checkContainer; 
+      const videoElm = checkContainer.querySelector('video');
+      video = videoElm;
+    } else {
+      const nodeToCopy = document.getElementById("sample-video-div").querySelector('div');
+      const newDiv = nodeToCopy.cloneNode(true);
+      div = newDiv;
+      video = newDiv.querySelector('video');
+      let name = newDiv.querySelector(".video-user-id");
+      name.innerText = userNameWs;
+      div.id = `participant-video-${userNameWs}`;
+      video.id = `video-elm-${userNameWs}`;
+      video.style.display = 'none';
+      divMeetingRoom.appendChild(div);
+    }
+
+    if(div) {
+      div.classList.remove("border-danger");
+      div.classList.add("border-success");
+      // const callButton = div.querySelector(".connect-candidate");
+      // callButton.disabled = false;
+    }
 
     const onOffer = (_err, offer, _wp) => {
       console.log("On Offer");
@@ -130,14 +153,6 @@ function videoRecordingUsingSignalingServer(props) {
       onicecandidate: onIceCandidate,
     };
 
-    if (iceServers) {
-      options.configurations = {
-        iceServers: iceServers,
-      }
-    }
-
-    // console.log('ICE server DATA on RECV ONLY')
-    // console.log(iceServers)
     // This is for receving candidates
     user.rtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
       options,
@@ -167,11 +182,8 @@ function videoRecordingUsingSignalingServer(props) {
     let constraints = {
       audio: true,
       video: {
-        mandatory: {
-          maxWidth: 320,
-          maxFrameRate: 15,
-          minFrameRate: 5,
-        },
+        width: { min: 320, ideal: 320, max: 640 },
+        height: { min: 240, ideal: 240, max: 480 },
       },
     };
 
@@ -200,22 +212,13 @@ function videoRecordingUsingSignalingServer(props) {
     };
 
     let options = {
-      localVideo: video,
-      mediaConstraints: constraints,
+      // localVideo: video,
+      // mediaConstraints: constraints,
       onicecandidate: onIceCandidate,
     };
 
-    if (iceServers) {
-      options.configurations = {
-        iceServers: iceServers,
-      }
-    }
-
-    // console.log('ICE server DATA on SEND ONLY')
-    // console.log(iceServers)
-
     // This is for sending candidate
-    user.rtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
+    user.rtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
       options,
       function (err) {
         if (err) {
@@ -225,9 +228,9 @@ function videoRecordingUsingSignalingServer(props) {
       }
     );
 
-    // existingUsers.forEach(function (element) {
-    //   receiveVideo(element.id, element.name);
-    // });
+    existingUsers.forEach(function (element) {
+      receiveVideo(element.id, element.name);
+    });
 
     currentRtcPeer = user.rtcPeer;
 
@@ -236,13 +239,18 @@ function videoRecordingUsingSignalingServer(props) {
     }, 5*60*1000);
   }
 
+  function checkAdminUser(userName) {
+    return userName.split('-').includes('admin');
+  }
+
   function onReceiveVideoAnswer(senderId, sdpAnswer) {
-    const user = participants[senderId];
-    if (user) user.rtcPeer.processAnswer(sdpAnswer);
+    console.log(participants)
+    console.log(senderId)
+    participants[senderId].rtcPeer.processAnswer(sdpAnswer);
   }
 
   function addIceCandidate(userId, candidate) {
-    const user = participants[userId];
-    if (user) user.rtcPeer.addIceCandidate(candidate);
+    participants[userId].rtcPeer.addIceCandidate(candidate);
   }
 };
+
