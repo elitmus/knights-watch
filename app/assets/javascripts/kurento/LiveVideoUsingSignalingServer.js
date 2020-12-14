@@ -168,7 +168,7 @@ function liveVideoUsingSignalingServer(props) {
   function onExistingParticipants(userIdWs, existingUsers) {
     let video = document.createElement("video");
     video.id = userIdWs;
-    video.autoplay = true;
+    video.autoplay = false;
 
     let user = {
       id: userIdWs,
@@ -244,8 +244,6 @@ function liveVideoUsingSignalingServer(props) {
   }
 
   function onReceiveVideoAnswer(senderId, sdpAnswer) {
-    console.log(participants)
-    console.log(senderId)
     participants[senderId].rtcPeer.processAnswer(sdpAnswer);
   }
 
