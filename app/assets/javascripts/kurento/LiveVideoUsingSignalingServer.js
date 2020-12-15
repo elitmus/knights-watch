@@ -33,7 +33,7 @@ function liveVideoUsingSignalingServer(props) {
 
     switch (message.event) {
       case "newParticipantArrived":
-        receiveVideo(message.userId, message.userName);
+        onNewParticipant(message.userId, message.userName, message.roomName);
         break;
       case "existingParticipants":
         onExistingParticipants(message.userId, message.existingUsers);
@@ -88,6 +88,7 @@ function liveVideoUsingSignalingServer(props) {
     const currentUser = props.user;
     // if (userNameWs === currentUser) return;
     if (checkAdminUser(userNameWs)) return;
+
     const checkContainer = document.getElementById(
       `participant-video-${userNameWs}`
     );
@@ -165,57 +166,37 @@ function liveVideoUsingSignalingServer(props) {
     );
   }
 
+  function onNewParticipant(userIdWs, userNameWs, roomNameWs) {
+    if (roomName === roomNameWs) receiveVideo(userIdWs, userNameWs);
+  }
+
   function onExistingParticipants(userIdWs, existingUsers) {
-    let video = document.createElement("video");
-    video.id = userIdWs;
-    video.autoplay = false;
+    // let video = document.createElement("video");
+    // video.id = userIdWs;
+    // video.autoplay = false;
+
+    // let user = {
+    //   id: userIdWs,
+    //   userName: userName,
+    //   video: video,
+    //   rtcPeer: null,
+    // };
 
     let user = {
       id: userIdWs,
       userName: userName,
-      video: video,
       rtcPeer: null,
     };
 
     participants[user.id] = user;
 
-    let constraints = {
-      audio: true,
-      video: {
-        width: { min: 320, ideal: 320, max: 640 },
-        height: { min: 240, ideal: 240, max: 480 },
-      },
-    };
-
-    const onOffer = (_err, offer, _wp) => {
-      console.log("On Offer");
-      let message = {
-        event: "receiveVideoFrom",
-        userId: user.id,
-        roomName: roomName,
-        sdpOffer: offer,
-      };
-      console.log(message);
-      sendMessage(message);
-    };
-
-    // send Icecandidate
-    const onIceCandidate = (candidate, wp) => {
-      console.log("sending ice candidates");
-      var message = {
-        event: "candidate",
-        userId: user.id,
-        roomName: roomName,
-        candidate: candidate,
-      };
-      sendMessage(message);
-    };
-
-    let options = {
-      // localVideo: video,
-      // mediaConstraints: constraints,
-      onicecandidate: onIceCandidate,
-    };
+    // let constraints = {
+    //   audio: true,
+    //   video: {
+    //     width: { min: 320, ideal: 320, max: 640 },
+    //     height: { min: 240, ideal: 240, max: 480 },
+    //   },
+    // };
 
     // This is for sending candidate
     user.rtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
@@ -229,7 +210,7 @@ function liveVideoUsingSignalingServer(props) {
     );
 
     existingUsers.forEach(function (element) {
-      receiveVideo(element.id, element.name);
+      if (roomName === element.roomName) receiveVideo(element.id, element.name);
     });
 
     currentRtcPeer = user.rtcPeer;
