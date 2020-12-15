@@ -198,6 +198,36 @@ function liveVideoUsingSignalingServer(props) {
     //   },
     // };
 
+    const onOffer = (_err, offer, _wp) => {
+      console.log("On Offer");
+      let message = {
+        event: "receiveVideoFrom",
+        userId: user.id,
+        roomName: roomName,
+        sdpOffer: offer,
+      };
+      console.log(message);
+      sendMessage(message);
+    };
+
+    // send Icecandidate
+    const onIceCandidate = (candidate, wp) => {
+      console.log("sending ice candidates");
+      var message = {
+        event: "candidate",
+        userId: user.id,
+        roomName: roomName,
+        candidate: candidate,
+      };
+      sendMessage(message);
+    };
+
+    let options = {
+      // localVideo: video,
+      // mediaConstraints: constraints,
+      onicecandidate: onIceCandidate,
+    };
+
     // This is for sending candidate
     user.rtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
       options,
