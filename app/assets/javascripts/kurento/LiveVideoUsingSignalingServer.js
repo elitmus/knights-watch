@@ -171,32 +171,26 @@ function liveVideoUsingSignalingServer(props) {
   }
 
   function onExistingParticipants(userIdWs, existingUsers) {
-    // let video = document.createElement("video");
-    // video.id = userIdWs;
-    // video.autoplay = false;
-
-    // let user = {
-    //   id: userIdWs,
-    //   userName: userName,
-    //   video: video,
-    //   rtcPeer: null,
-    // };
+    let video = document.createElement("video");
+    video.id = userIdWs;
+    video.autoplay = false;
 
     let user = {
       id: userIdWs,
       userName: userName,
+      video: video,
       rtcPeer: null,
     };
 
     participants[user.id] = user;
 
-    // let constraints = {
-    //   audio: true,
-    //   video: {
-    //     width: { min: 320, ideal: 320, max: 640 },
-    //     height: { min: 240, ideal: 240, max: 480 },
-    //   },
-    // };
+    let constraints = {
+      audio: true,
+      video: {
+        width: { min: 320, ideal: 320, max: 640 },
+        height: { min: 240, ideal: 240, max: 480 },
+      },
+    };
 
     const onOffer = (_err, offer, _wp) => {
       console.log("On Offer");
