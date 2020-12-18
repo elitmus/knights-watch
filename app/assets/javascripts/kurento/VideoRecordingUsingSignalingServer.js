@@ -14,11 +14,6 @@ function videoRecordingUsingSignalingServer(props) {
   roomName = props.event.toString();
   userName = props.user.toString();
 
-  try {
-    // iceServers = JSON.parse(proctoringData.dataset.iceServers);
-  } catch(error) {
-    console.log("Ice servers not defined!");
-  }
   if (roomName && userName) {
     let message = {
       event: "joinRoom",
@@ -32,12 +27,7 @@ function videoRecordingUsingSignalingServer(props) {
   }
 
   function socketListener(message) {
-    console.log("Message arrived", message);
-
     switch (message.event) {
-      // case "newParticipantArrived":
-      //   receiveVideo(message.userId, message.userName);
-      //   break;
       case "existingParticipants":
         onExistingParticipants(message.userId, message.existingUsers);
         break;
@@ -56,7 +46,6 @@ function videoRecordingUsingSignalingServer(props) {
   socket.on("signaling-message", socketListener);
 
   function sendMessage(message) {
-    console.log("sending " + message.event + " message to server");
     socket.emit("signaling-message", message);
   }
 
@@ -94,7 +83,6 @@ function videoRecordingUsingSignalingServer(props) {
     // divMeetingRoom.appendChild(div);
 
     const onOffer = (_err, offer, _wp) => {
-      console.log("On Offer");
       let message = {
         event: "receiveVideoFrom",
         userId: user.id,
@@ -106,7 +94,6 @@ function videoRecordingUsingSignalingServer(props) {
 
     // send Icecandidate
     const onIceCandidate = (candidate, wp) => {
-      console.log("sending ice candidates");
       var message = {
         event: "candidate",
         userId: user.id,
@@ -136,8 +123,6 @@ function videoRecordingUsingSignalingServer(props) {
       }
     }
 
-    // console.log('ICE server DATA on RECV ONLY')
-    // console.log(iceServers)
     // This is for receving candidates
     user.rtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
       options,
@@ -183,13 +168,11 @@ function videoRecordingUsingSignalingServer(props) {
         roomName: roomName,
         sdpOffer: offer,
       };
-      console.log(message);
       sendMessage(message);
     };
 
     // send Icecandidate
     const onIceCandidate = (candidate, wp) => {
-      console.log("sending ice candidates");
       var message = {
         event: "candidate",
         userId: user.id,
@@ -211,9 +194,6 @@ function videoRecordingUsingSignalingServer(props) {
       }
     }
 
-    // console.log('ICE server DATA on SEND ONLY')
-    // console.log(iceServers)
-
     // This is for sending candidate
     user.rtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
       options,
@@ -224,10 +204,6 @@ function videoRecordingUsingSignalingServer(props) {
         this.generateOffer(onOffer);
       }
     );
-
-    // existingUsers.forEach(function (element) {
-    //   receiveVideo(element.id, element.name);
-    // });
 
     currentRtcPeer = user.rtcPeer;
 

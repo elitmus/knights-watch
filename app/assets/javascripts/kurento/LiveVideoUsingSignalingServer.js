@@ -33,7 +33,7 @@ function liveVideoUsingSignalingServer(props) {
 
     switch (message.event) {
       case "newParticipantArrived":
-        receiveVideo(message.userId, message.userName);
+        onNewParticipant(message.userId, message.userName, message.roomName);
         break;
       case "existingParticipants":
         onExistingParticipants(message.userId, message.existingUsers);
@@ -88,6 +88,7 @@ function liveVideoUsingSignalingServer(props) {
     const currentUser = props.user;
     // if (userNameWs === currentUser) return;
     if (checkAdminUser(userNameWs)) return;
+
     const checkContainer = document.getElementById(
       `participant-video-${userNameWs}`
     );
@@ -165,10 +166,14 @@ function liveVideoUsingSignalingServer(props) {
     );
   }
 
+  function onNewParticipant(userIdWs, userNameWs, roomNameWs) {
+    if (roomName === roomNameWs) receiveVideo(userIdWs, userNameWs);
+  }
+
   function onExistingParticipants(userIdWs, existingUsers) {
     let video = document.createElement("video");
     video.id = userIdWs;
-    video.autoplay = true;
+    video.autoplay = false;
 
     let user = {
       id: userIdWs,
@@ -229,7 +234,7 @@ function liveVideoUsingSignalingServer(props) {
     );
 
     existingUsers.forEach(function (element) {
-      receiveVideo(element.id, element.name);
+      if (roomName === element.roomName) receiveVideo(element.id, element.name);
     });
 
     currentRtcPeer = user.rtcPeer;
@@ -244,8 +249,6 @@ function liveVideoUsingSignalingServer(props) {
   }
 
   function onReceiveVideoAnswer(senderId, sdpAnswer) {
-    console.log(participants)
-    console.log(senderId)
     participants[senderId].rtcPeer.processAnswer(sdpAnswer);
   }
 

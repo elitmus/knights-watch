@@ -34,6 +34,7 @@ function startLiveVideoProctoring(props) {
     connectedEvent.innerText = event;
     let candidateCount = 0;
     let adminCount = 0;
+
     if (roomInfo) {
       Object.keys(roomInfo).forEach((key) => {
         if (checkAdminUser(key)) adminCount += 1;
@@ -57,6 +58,7 @@ function startLiveVideoProctoring(props) {
           let link = document.createElement('a');
           const text = document.createTextNode(key);
           link.appendChild(text);
+          link.id = `candidate-list-elm-${key}`;
           link.className = listClass;
           div.appendChild(link);
           link.addEventListener('click', () => {
