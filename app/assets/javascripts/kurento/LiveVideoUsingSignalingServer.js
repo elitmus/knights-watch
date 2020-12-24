@@ -5,8 +5,15 @@ function liveVideoUsingSignalingServer(props) {
   let appName;
   let participants = {};
   let currentRtcPeer;
+  const iceCandidateQueue = {};
+  const connectedEvent = document.getElementById("connected-event");
+  const assignedUsers = document.getElementById("assigned-candidates");
+  const connectedUsers = document.getElementById("connected-candidates");
+  const connectedAdminUsers = document.getElementById("connected-recruiters");
+  const connectedUsersList = document.getElementById("connected-candidates-list");
+  const updateTimer = 5 * 1000; // 5 seconds
+  const { socket, event, user, assignedUserIds } = props;
 
-  let socket = props.socket;
   var divMeetingRoom = document.getElementById(
     props.videoDivId || "proctoringVideos"
   );
@@ -47,14 +54,30 @@ function liveVideoUsingSignalingServer(props) {
       case "candidate":
         addIceCandidate(message.userId, message.candidate);
         break;
+      case "analytics-data":
+        setUpAnalytics(message.roomInfo);
+        break;
     }
   }
 
   socket.on("signaling-message", socketListener);
+  getLiveVideoProctoringAnalyticsData({ socket, event });
+  setInterval(() => {
+    getLiveVideoProctoringAnalyticsData({ socket, event });
+  }, updateTimer);
 
   function sendMessage(message) {
     console.log("sending " + message.event + " message to server");
     socket.emit("signaling-message", message);
+  }
+
+  function getLiveVideoProctoringAnalyticsData(props) {
+    let roomName = props.event.toString();
+    let message = {
+      event: "analytics-data",
+      roomName,
+    };
+    sendMessage(message);
   }
 
   
@@ -85,10 +108,6 @@ function liveVideoUsingSignalingServer(props) {
   }
 
   function receiveVideo(userIdWs, userNameWs) {
-    const currentUser = props.user;
-    // if (userNameWs === currentUser) return;
-    if (checkAdminUser(userNameWs)) return;
-
     const checkContainer = document.getElementById(
       `participant-video-${userNameWs}`
     );
@@ -107,6 +126,7 @@ function liveVideoUsingSignalingServer(props) {
       div.id = `participant-video-${userNameWs}`;
       video.id = `video-elm-${userNameWs}`;
       video.style.display = 'none';
+      video.autoplay = false;
       divMeetingRoom.appendChild(div);
     }
 
@@ -118,7 +138,7 @@ function liveVideoUsingSignalingServer(props) {
     }
 
     const onOffer = (_err, offer, _wp) => {
-      console.log("On Offer");
+      // console.log("On Offer");
       let message = {
         event: "receiveVideoFrom",
         userId: user.id,
@@ -130,7 +150,7 @@ function liveVideoUsingSignalingServer(props) {
 
     // send Icecandidate
     const onIceCandidate = (candidate, wp) => {
-      console.log("sending ice candidates");
+      // console.log("sending ice candidates");
       var message = {
         event: "candidate",
         userId: user.id,
@@ -161,13 +181,28 @@ function liveVideoUsingSignalingServer(props) {
         if (err) {
           return console.error(err);
         }
+        if (iceCandidateQueue) {
+          while (iceCandidateQueue.length) {
+            const ice = iceCandidateQueue.shift();
+            user.rtcPeer.addIceCandidate(ice.candidate);
+          }
+        }
         this.generateOffer(onOffer);
       }
     );
   }
 
   function onNewParticipant(userIdWs, userNameWs, roomNameWs) {
-    if (roomName === roomNameWs) receiveVideo(userIdWs, userNameWs);
+    // const fetchAssignmentUrl = '/staff/accounts/invitations_proctors_candidates/fetch_or_create_candidate_proctor_assignment.json?';
+    // if (roomName !== roomNameWs) return false;
+    // if (checkAdminUser(userNameWs)) return false;
+
+    // fetch(`${fetchAssignmentUrl}proctor_user_id=${userName}&candidate_user_id=${userNameWs}&invitation_code=${roomNameWs}`, { credentials: 'include' })
+    // .then(response => response.ok ? response.json() : {})
+    // .then(response => {
+    if (validCandidate(userNameWs, roomNameWs)) receiveVideo(userIdWs, userNameWs);
+    // if (roomName === roomNameWs) receiveVideo(userIdWs, userNameWs);
+    // })
   }
 
   function onExistingParticipants(userIdWs, existingUsers) {
@@ -193,20 +228,20 @@ function liveVideoUsingSignalingServer(props) {
     };
 
     const onOffer = (_err, offer, _wp) => {
-      console.log("On Offer");
+      // console.log("On Offer");
       let message = {
         event: "receiveVideoFrom",
         userId: user.id,
         roomName: roomName,
         sdpOffer: offer,
       };
-      console.log(message);
+      // console.log(message);
       sendMessage(message);
     };
 
     // send Icecandidate
     const onIceCandidate = (candidate, wp) => {
-      console.log("sending ice candidates");
+      // console.log("sending ice candidates");
       var message = {
         event: "candidate",
         userId: user.id,
@@ -229,12 +264,19 @@ function liveVideoUsingSignalingServer(props) {
         if (err) {
           return console.error(err);
         }
+        if (iceCandidateQueue) {
+          while (iceCandidateQueue.length) {
+            const ice = iceCandidateQueue.shift();
+            user.rtcPeer.addIceCandidate(ice.candidate);
+          }
+        }
         this.generateOffer(onOffer);
       }
     );
 
     existingUsers.forEach(function (element) {
-      if (roomName === element.roomName) receiveVideo(element.id, element.name);
+      if (validCandidate(element.name, element.roomName)) receiveVideo(element.id, element.name);
+      // if (roomName === element.roomName) receiveVideo(element.id, element.name);
     });
 
     currentRtcPeer = user.rtcPeer;
@@ -242,6 +284,62 @@ function liveVideoUsingSignalingServer(props) {
     setTimeout(() => {
       stopRecordingAndRestart();
     }, 5*60*1000);
+  }
+
+  function setUpAnalytics(roomInfo) {
+    connectedEvent.innerText = event;
+    let candidateCount = 0;
+    let adminCount = 0;
+    let assignedCount = 0;
+
+    if (roomInfo) {
+      Object.keys(roomInfo).forEach((key) => {
+        if (checkAdminUser(key)) adminCount += 1;
+        else candidateCount += 1;
+
+        if (validCandidate(key, roomInfo[key].room)) assignedCount += 1;
+      });
+    }
+    assignedUsers.innerText = `${assignedCount}/${JSON.parse(assignedUserIds).length}`;
+    connectedUsers.innerText = candidateCount;
+    connectedAdminUsers.innerText = adminCount;
+    // List update
+    let div = document.createElement("div");
+    div.className = "list-group";
+    listClass = "list-group-item list-group-item-action rounded-0";
+    if (roomInfo) {
+      Object.keys(roomInfo).forEach((key) => {
+        if (validCandidate(key, roomInfo[key].room)) {
+          let link = document.createElement('a');
+          const text = document.createTextNode(key);
+          link.appendChild(text);
+          link.id = `candidate-list-elm-${key}`;
+          link.className = listClass;
+          div.appendChild(link);
+          link.addEventListener('click', () => {
+            const videoElm = document.getElementById(`video-elm-${key}`);
+            if (videoElm.style.display === 'none') videoElm.style.display = 'block';
+            else videoElm.style.display = 'none';
+          });
+        }
+      })
+    } else {
+      let link = document.createElement("a");
+      const text = document.createTextNode("No users connected!");
+      link.appendChild(text);
+      link.className = listClass;
+      div.appendChild(link);
+    }
+    connectedUsersList.innerHTML = "";
+    connectedUsersList.appendChild(div);
+  }
+
+  function validCandidate(candidateUserId, room) {
+    if (checkAdminUser(candidateUserId)) return false;
+    if (roomName !== room) return false;
+    if (!assignedUserIds.includes(parseInt(candidateUserId))) return false;
+
+    return true;
   }
 
   function checkAdminUser(userName) {
@@ -253,7 +351,11 @@ function liveVideoUsingSignalingServer(props) {
   }
 
   function addIceCandidate(userId, candidate) {
-    participants[userId].rtcPeer.addIceCandidate(candidate);
+    const user = participants[userId]
+    if (user) participants[userId].rtcPeer.addIceCandidate(candidate);
+    else {
+      if (!iceCandidateQueue[userId]) iceCandidateQueue[userId] = [];
+      iceCandidateQueue[userId].push({ candidate });
+    }
   }
 };
-
