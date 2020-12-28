@@ -193,16 +193,7 @@ function liveVideoUsingSignalingServer(props) {
   }
 
   function onNewParticipant(userIdWs, userNameWs, roomNameWs) {
-    // const fetchAssignmentUrl = '/staff/accounts/invitations_proctors_candidates/fetch_or_create_candidate_proctor_assignment.json?';
-    // if (roomName !== roomNameWs) return false;
-    // if (checkAdminUser(userNameWs)) return false;
-
-    // fetch(`${fetchAssignmentUrl}proctor_user_id=${userName}&candidate_user_id=${userNameWs}&invitation_code=${roomNameWs}`, { credentials: 'include' })
-    // .then(response => response.ok ? response.json() : {})
-    // .then(response => {
     if (validCandidate(userNameWs, roomNameWs)) receiveVideo(userIdWs, userNameWs);
-    // if (roomName === roomNameWs) receiveVideo(userIdWs, userNameWs);
-    // })
   }
 
   function onExistingParticipants(userIdWs, existingUsers) {
@@ -235,7 +226,6 @@ function liveVideoUsingSignalingServer(props) {
         roomName: roomName,
         sdpOffer: offer,
       };
-      // console.log(message);
       sendMessage(message);
     };
 
@@ -276,7 +266,6 @@ function liveVideoUsingSignalingServer(props) {
 
     existingUsers.forEach(function (element) {
       if (validCandidate(element.name, element.roomName)) receiveVideo(element.id, element.name);
-      // if (roomName === element.roomName) receiveVideo(element.id, element.name);
     });
 
     currentRtcPeer = user.rtcPeer;
