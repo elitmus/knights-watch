@@ -126,8 +126,6 @@ function liveVideoUsingSignalingServer(props) {
       div.id = `participant-video-${userNameWs}`;
       video.id = `video-elm-${userNameWs}`;
       video.muted = true;
-      // video.style.display = 'none';
-      video.autoplay = false;
       divMeetingRoom.appendChild(div);
     }
 
