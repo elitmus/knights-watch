@@ -1,3 +1,3 @@
 module Proctoring
-  VERSION = '0.7.0-beta'
+  VERSION = '0.7.1-beta'
 end
