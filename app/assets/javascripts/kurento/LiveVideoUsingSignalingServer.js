@@ -125,8 +125,7 @@ function liveVideoUsingSignalingServer(props) {
       name.innerText = userNameWs;
       div.id = `participant-video-${userNameWs}`;
       video.id = `video-elm-${userNameWs}`;
-      video.style.display = 'none';
-      video.autoplay = false;
+      video.muted = true;
       divMeetingRoom.appendChild(div);
     }
 
@@ -305,11 +304,6 @@ function liveVideoUsingSignalingServer(props) {
           link.id = `candidate-list-elm-${key}`;
           link.className = listClass;
           div.appendChild(link);
-          link.addEventListener('click', () => {
-            const videoElm = document.getElementById(`video-elm-${key}`);
-            if (videoElm.style.display === 'none') videoElm.style.display = 'block';
-            else videoElm.style.display = 'none';
-          });
         }
       })
     } else {
