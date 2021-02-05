@@ -1,12 +1,11 @@
 module Proctoring
-  class << self
-    mattr_accessor :media_server_url
-    mattr_accessor :app_name
-    mattr_accessor :turn_secret
-    self.media_server_url = 'localhost:8000'
-    self.app_name = 'default'
-    self.turn_secret = 'secret'
-  end
+  self.mattr_accessor :media_server_url
+  self.mattr_accessor :app_name
+  self.mattr_accessor :turn_secret
+
+  self.media_server_url = 'localhost:8000'
+  self.app_name = 'default'
+  self.turn_secret = 'secret'
 
   def self.setup(&block)
     yield self
