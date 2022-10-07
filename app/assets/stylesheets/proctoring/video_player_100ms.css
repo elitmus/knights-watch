@@ -1,0 +1,17 @@
+#proctoringVideos {
+  display: flex;
+  flex-wrap: wrap;
+}
+#proctoringVideos .videoContainer{
+  border-width: 5px;
+}
+#proctoringVideos .videoContainer video {
+  width: 320px;
+  height: 240px;
+}
+.border-danger .status-online {
+  display: none;
+}
+.border-success .status-offline {
+  display: none;
+}

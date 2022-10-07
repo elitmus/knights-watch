@@ -1,0 +1,66 @@
+<%= stylesheet_link_tag "proctoring/video_player_100ms" %>
+<%= content_tag :div, '', id: 'proctoring-data', data: { app_name: Proctoring.app_name } %>
+
+<div class="container-fluid">
+  <div class="row text-white">
+    <div class="col-3">
+      <div class="card bg-danger shadow">
+        <div class="card-body">
+          <span class="data-title h6">Event Id</span>
+          <h1 class="text-white display-4 text-uppercase" id="connected-event">-</h1>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="card bg-success shadow">
+        <div class="card-body">
+          <span class="data-title h6">Assigned Candidates Online</span>
+          <h1 class="text-white display-4 text-uppercase" id="assigned-candidates">0</h1>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="card bg-primary shadow">
+        <div class="card-body">
+          <span class="data-title h6">Total Candidates Online</span>
+          <h1 class="text-white display-4 text-uppercase" id="connected-candidates">0</h1>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="card bg-warning shadow">
+        <div class="card-body">
+          <span class="data-title h6">Proctors Online</span>
+          <!-- <h1 class="display-4 text-uppercase">23</h1> -->
+          <h1 class="text-white display-4 text-uppercase" id="connected-recruiters">0</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row border no-gutters mt-4 h-100">
+    <div class="col-3 border-right bg-gray" style="height: 100vh; overflow: scroll;">
+      <div class="card-header">
+        <h5 class="text-dark">List of connected candidates</h5>
+      </div>
+      <div class="bg-light" id="connected-candidates-list"></div>
+    </div>
+    <div class="col-9" style="overflow: scroll;height: 100vh;">
+      <div id="proctoringVideos"></div>
+    </div>
+  </div>
+</div>
+
+<div id="sample-video-div" class="d-none">
+  <div class="videoContainer rounded-0 card" id="participant-video-">
+    <video id="video-elm-" autoplay="" controls=""></video>
+    <div class="card-body p-2">
+      <span class="text-dark m-0 h6"><strong>UserId: </strong><strong class="video-user-id">134112</strong></span>
+      <span class="status-online text-success">Online</span>
+      <span class="status-offline text-danger">Offline</span>
+    </div>
+    <!-- <button type="button" class="btn btn-danger rounded-0 btn-block stop-connection">Stop</button> -->
+  </div>
+</div>
+
+<%= javascript_include_tag 'kurento/kurento-utils' %>
+<%= javascript_include_tag "kurento/LiveVideoUsingSignalingServer" %>
