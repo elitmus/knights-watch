@@ -11,4 +11,10 @@ Proctoring::Engine.routes.draw do
       post 'upload_video'
     end
   end
+
+  namespace :api do
+    namespace :v1 do
+      resources :authentication, only: :create
+    end
+  end
 end
