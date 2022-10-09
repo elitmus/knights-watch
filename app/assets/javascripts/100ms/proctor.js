@@ -1,11 +1,9 @@
 import { HMSReactiveStore, selectPeers, selectIsConnectedToRoom } from "https://cdn.skypack.dev/@100mslive/hms-video-store";
 
-const proctor = (props) => {
+const connectToVideoProctoringRoom = (props) => {
   const hms = new HMSReactiveStore();
   const hmsStore = hms.getStore();
   const hmsActions = hms.getHMSActions();
-  const peers = hmsStore.getState(selectPeers);
-  const divMeetingRoom = document.getElementById("proctoringVideos");
   
   const joinVideoProctoringRoom = async (props) => {
     await hmsActions.join(
@@ -17,9 +15,9 @@ const proctor = (props) => {
           isVideoMuted: true
         },
         metadata: JSON.stringify({
-          admin_id: props.admin_id,
-          rememberDeviceSelection: true
-        })
+          admin_id: props.userId,
+        }),
+        rememberDeviceSelection: true
       }
     )
   }
@@ -44,6 +42,7 @@ const proctor = (props) => {
     return newElement
   }
   const renderPeers = (peers) => {
+    const divMeetingRoom = document.getElementById("proctoringVideos");
     divMeetingRoom.innerHTML = '';
     peers.forEach((peer) => {
       if(!(peer.isLocal || peer.name === props.userId)){
@@ -116,5 +115,5 @@ const proctor = (props) => {
   hmsStore.subscribe(onConnection, selectIsConnectedToRoom);
 }
 
-window.proctor = proctor;
+window.connectToVideoProctoringRoom = connectToVideoProctoringRoom;
 
