@@ -29,7 +29,8 @@ const connectToVideoProctoringRoom = (props) => {
     const data = {
       user_id: props.userId,
       role: 'proctor',
-      event_id: props.eventId
+      event_id: props.eventId,
+      max_people_allowed: props.maxPeopleAllowed
     }
 
     return fetch(url, {
