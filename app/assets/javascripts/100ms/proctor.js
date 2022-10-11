@@ -42,9 +42,7 @@ const connectToVideoProctoringRoom = (props) => {
       body: JSON.stringify(data)
     })
     .then((response) => response.json())
-    .then((result) => {
-      return result;
-    })
+    .then((result) => result)
     .catch(error => console.warn(error));
   } 
 

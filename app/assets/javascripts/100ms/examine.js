@@ -22,7 +22,48 @@ const connectToCandidateRoom = (props) => {
     )
   }
 
-  joinRoom(props);
+  const fetchAuthenticationToken = (props) => {
+    const url = '/proctoring/api/v1/authentication';
+    const csrfMeta = document.getElementsByName('csrf-token');
+    const token = csrfMeta[0] ? csrfMeta[0].content : '';
+    const data = {
+      user_id: props.userId,
+      role: 'candidates',
+      event_id: props.eventId
+    }
+
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': token,
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then((response) => response.json())
+    .then((result) => result)
+    .catch((error) => console.warn(error))
+  }
+
+  const joinVideoProctoring = (props) => {
+    const authTokenKey = `authToken-${props.eventId}-${props.userId}`;
+    let authToken = window.localStorage.getItem(authTokenKey)
+    if(authToken){
+      joinRoom({ userId: props.userId, authToken: authToken });
+    } else {
+      fetchAuthenticationToken(props).then((result) => {
+        if(result.success){
+          window.localStorage.setItem(authTokenKey, result.authentication_token);
+          joinRoom({ userId: props.userId, authToken: result.authentication_token });
+        } else {
+          console.log(result.error)
+        }
+      })
+    }
+  }
+
+  joinVideoProctoring(props);
 
   const leaveRoom = () => {
     hmsActions.leave();
