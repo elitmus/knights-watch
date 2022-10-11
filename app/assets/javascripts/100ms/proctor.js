@@ -22,31 +22,39 @@ const connectToVideoProctoringRoom = (props) => {
     )
   }
 
+  const fetchAuthenticationToken = (props) => {
+    const csrfMeta = document.getElementsByName('csrf-token');
+    const token = csrfMeta[0] ? csrfMeta[0].content : '';
+    const url = '/proctoring/api/v1/authentication'
+    const data = {
+      user_id: props.userId,
+      role: 'proctor',
+      event_id: props.eventId
+    }
+
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': token,
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then((response) => response.json())
+    .then((result) => {
+      return result;
+    })
+    .catch(error => console.warn(error));
+  } 
+
   const joinVideoProctoring = (props) => {
     const authTokenKey = `authToken-${props.eventId}-${props.userId}`;
     let authToken = window.localStorage.getItem(authTokenKey)
     if(authToken){
       joinVideoProctoringRoom({ userId: props.userId, authToken: authToken });
     } else {
-      const csrfMeta = document.getElementsByName('csrf-token');
-      const token = csrfMeta[0] ? csrfMeta[0].content : '';
-      const url = '/proctoring/api/v1/authentication'
-      const data = {
-        user_id: props.userId,
-        role: 'proctor',
-        event_id: props.eventId
-      }
-      fetch(url, {
-        method: 'POST',
-        headers: {
-          'X-CSRF-Token': token,
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-      .then((response) => response.json())
-      .then((result) => {
+      fetchAuthenticationToken(props).then((result) => {
         if(result.success){
           window.localStorage.setItem(authTokenKey, result.authentication_token);
           joinVideoProctoringRoom({ userId: props.userId, authToken: result.authentication_token });

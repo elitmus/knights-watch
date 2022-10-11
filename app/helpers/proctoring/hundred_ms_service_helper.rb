@@ -11,27 +11,7 @@ module Proctoring
       http.use_ssl = true
       request = Net::HTTP::Post.new(uri.path, { 'Content-Type' => 'application/json' })
       request['Authorization'] = "Bearer #{generate_management_token}"
-      body = {
-        name: "#{params[:event_id]}-#{SecureRandom.uuid}",
-        description: "Room for the event with id - #{params[:event_id]}",
-        template_id: Proctoring.hundred_ms_template_id,
-        recording_info: {
-          enabled: true,
-          upload_info: {
-            type: 's3',
-            location: Proctoring.hundred_ms_s3_bucket,
-            prefix: params[:event_id],
-            options: {
-              region: Proctoring.hundred_ms_s3_region
-            },
-            credentials: {
-              key: Proctoring.hundred_ms_s3_access_key,
-              secret: Proctoring.hundred_ms_s3_access_secret
-            }
-          }
-        },
-        region: 'in'
-      }
+      body = get_create_room_request_parameters(params[:event_id])
       request.body = body.to_json
       response = http.request(request)
       JSON.parse(response.body)
@@ -44,6 +24,30 @@ module Proctoring
       when 'create_room'
         'https://api.100ms.live/v2/rooms'
       end
+    end
+
+    def get_create_room_request_parameters(event_id)
+      {
+        name: "#{event_id}-#{SecureRandom.uuid}",
+        description: "Room for the event with id - #{event_id}",
+        template_id: Proctoring.hundred_ms_template_id,
+        recording_info: {
+          enabled: true,
+          upload_info: {
+            type: 's3',
+            location: Proctoring.hundred_ms_s3_bucket,
+            prefix: event_id,
+            options: {
+              region: Proctoring.hundred_ms_s3_region
+            },
+            credentials: {
+              key: Proctoring.hundred_ms_s3_access_key,
+              secret: Proctoring.hundred_ms_s3_access_secret
+            }
+          }
+        },
+        region: 'in'
+      }
     end
   end
 end
