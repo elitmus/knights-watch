@@ -25,7 +25,7 @@ module Proctoring
         candidates.each do |candidate_hash|
           return room_id if candidate_hash[:user_id] == user_id
         end
-      end
+      end; nil
     end
 
     def room_exists_with_space?(event_id, user_id, role, max_people_allowed)
@@ -34,13 +34,13 @@ module Proctoring
 
       rooms.each do |room_id, candidates|
         roles = candidates.map { |candidate_hash| candidate_hash[:role] }
-        next if roles.count(role) >= max_people_allowed
+        next if roles.count(role) >= max_people_allowed.to_i
 
         candidates << { user_id: user_id, role: role }
         rooms[room_id] = candidates
         Rails.cache.write("100ms_room_details_#{event_id}", rooms, expires_in: 2.hours)
         return room_id
-      end
+      end; nil
     end
 
     def add_room_to_the_cache(room_id, user_id, role, event_id)

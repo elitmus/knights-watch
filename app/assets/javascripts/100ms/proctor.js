@@ -44,7 +44,7 @@ const connectToVideoProctoringRoom = (props) => {
     })
     .then((response) => response.json())
     .then((result) => result)
-    .catch(error => console.warn(error));
+    .catch(error => console.log(error));
   } 
 
   const joinVideoProctoring = (props) => {

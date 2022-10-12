@@ -44,7 +44,7 @@ const connectToCandidateRoom = (props) => {
     })
     .then((response) => response.json())
     .then((result) => result)
-    .catch((error) => console.warn(error))
+    .catch((error) => console.log(error))
   }
 
   const joinVideoProctoring = (props) => {
@@ -85,8 +85,8 @@ const connectToCandidateRoom = (props) => {
 
   window.onunload = leaveRoom;
 
-  hmsStore.subsribe(renderCandidateStream, selectPeers);
-  hmsStore.subsribe(onConnection, selectIsConnectedToRoom);
+  hmsStore.subscribe(renderCandidateStream, selectPeers);
+  hmsStore.subscribe(onConnection, selectIsConnectedToRoom);
 }
 
 window.connectToCandidateRoom = connectToCandidateRoom
