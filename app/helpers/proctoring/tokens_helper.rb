@@ -22,7 +22,17 @@ module Proctoring
     end
 
     def self.encode_authentication_token
-      payload = { app_name: Proctoring.app_name }
+      now = Time.now
+      exp = now + 10.minutes
+      payload = {
+        app_name: Proctoring.app_name,
+        type: 'application',
+        jti: SecureRandom.uuid,
+        version: 2,
+        iat: now.to_i,
+        nbf: now.to_i,
+        exp: exp.to_i
+      }
       JWT.encode payload, Proctoring.app_secret, 'HS256'
     end
 

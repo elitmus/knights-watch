@@ -10,9 +10,8 @@ module Proctoring
 
     def token_valid?(token)
       JWT.decode token, Proctoring.app_secret, true, { algorithm: 'HS256' }
-      true
     rescue StandardError => _e
-      render json: { success: false, error: e.message }, status: :unauthorize
+      render json: { success: false, error: 'You are not the authorize person.' }, status: :unauthorized
     end
   end
 end

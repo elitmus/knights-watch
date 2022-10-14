@@ -28,7 +28,7 @@ const connectToVideoProctoringRoom = (props) => {
     const url = '/proctoring/api/v1/authentication';
     const applicationToken = document.getElementById('application-token');
 
-
+    
     const data = {
       user_id: props.userId,
       role: 'proctor',
