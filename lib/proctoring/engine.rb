@@ -9,6 +9,7 @@ module Proctoring
   mattr_accessor :hundred_ms_s3_access_key
   mattr_accessor :hundred_ms_s3_access_secret
   mattr_accessor :hundred_ms_s3_region
+  mattr_accessor :app_secret
 
   self.media_server_url = 'localhost:8000'
   self.app_name = 'default'

@@ -21,6 +21,11 @@ module Proctoring
       )
     end
 
+    def self.encode_authentication_token
+      payload = { app_name: Proctoring.app_name }
+      JWT.encode payload, Proctoring.app_secret, 'HS256'
+    end
+
     private
 
     def generate_app_token(room_id, user_id, role, app_access_key, app_secret)

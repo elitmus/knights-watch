@@ -25,7 +25,10 @@ const connectToVideoProctoringRoom = (props) => {
   const fetchAuthenticationToken = (props) => {
     const csrfMeta = document.getElementsByName('csrf-token');
     const token = csrfMeta[0] ? csrfMeta[0].content : '';
-    const url = '/proctoring/api/v1/authentication'
+    const url = '/proctoring/api/v1/authentication';
+    const applicationToken = document.getElementById('application-token');
+
+
     const data = {
       user_id: props.userId,
       role: 'proctor',
@@ -37,6 +40,7 @@ const connectToVideoProctoringRoom = (props) => {
       method: 'POST',
       headers: {
         'X-CSRF-Token': token,
+        'Token': applicationToken.dataset.token,
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },

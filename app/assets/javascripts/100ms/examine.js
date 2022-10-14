@@ -32,11 +32,14 @@ const connectToCandidateRoom = (props) => {
       event_id: props.eventId,
       max_people_allowed: props.maxPeopleAllowed
     }
+    const applicationToken = document.getElementById('application-token');
+
 
     return fetch(url, {
       method: 'POST',
       headers: {
         'X-CSRF-TOKEN': token,
+        'Token': applicationToken.dataset.token,
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },

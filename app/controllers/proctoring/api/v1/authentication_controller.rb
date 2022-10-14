@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 module Proctoring::Api::V1
-  class AuthenticationController < ApplicationController
+  class AuthenticationController < Proctoring::ApplicationController
     include Proctoring::TokensHelper
     include Proctoring::HundredMsServiceHelper
+    before_action :authenticate_app_token
 
     def create
       event_id = params[:event_id]

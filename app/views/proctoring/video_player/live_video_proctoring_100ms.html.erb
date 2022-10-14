@@ -1,5 +1,6 @@
 <%= stylesheet_link_tag "proctoring/video_player_100ms" %>
 <%= content_tag :div, '', id: 'proctoring-data', data: { app_name: Proctoring.app_name } %>
+<%= content_tag :div, '', id: 'application-token', data: { token: Proctoring::TokensHelper::encode_authentication_token } %>
 
 <div class="container-fluid">
   <div class="row border no-gutters mt-4 h-100">
