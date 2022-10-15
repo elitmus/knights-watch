@@ -12,7 +12,7 @@ module Proctoring::Api::V1
       role = params[:role]
       max_people_allowed = params[:max_people_allowed]
 
-      room_id = room_already_exists?(params[:event_id], params[:user_id])
+      room_id = room_already_exists?(event_id, :user_id)
 
       room_id ||= room_exists_with_space?(event_id, user_id, role, max_people_allowed)
 
