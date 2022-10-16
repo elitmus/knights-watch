@@ -10,6 +10,9 @@ module Proctoring
   mattr_accessor :hundred_ms_s3_access_secret
   mattr_accessor :hundred_ms_s3_region
   mattr_accessor :app_secret
+  mattr_accessor :redis_host
+  mattr_accessor :redis_port
+  mattr_accessor :redis_db
 
   self.media_server_url = 'localhost:8000'
   self.app_name = 'default'

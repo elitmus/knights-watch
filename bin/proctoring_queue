@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'proctoring/proctoring_queue'
 
 Proctoring::ProctoringQueue.daemonize

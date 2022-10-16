@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'net/http'
+
 module Proctoring
   module HundredMsServiceHelper
     include Proctoring::TokensHelper
@@ -38,7 +39,7 @@ module Proctoring
 
         candidates << { user_id: user_id, role: role }
         rooms[room_id] = candidates
-        Rails.cache.write("100ms_room_details_#{event_id}", rooms, expires_in: 2.hours)
+        redis_connection.set("100ms_room_details_#{event_id}", rooms, expires_in: 2.hours)
         return room_id
       end; nil
     end
@@ -48,7 +49,7 @@ module Proctoring
       candidates << { user_id: user_id, role: role }
       rooms = fetch_rooms_for_a_event(event_id) || {}
       rooms[room_id] = candidates
-      Rails.cache.write("100ms_room_details_#{event_id}", rooms, expires_in: 2.hours)
+      redis_connection.set("100ms_room_details_#{event_id}", rooms, expires_in: 2.hours)
     end
 
     private
@@ -85,7 +86,15 @@ module Proctoring
     end
 
     def fetch_rooms_for_a_event(event_id)
-      Rails.cache.read("100ms_room_details_#{event_id}")
+      redis_connection.get("100ms_room_details_#{event_id}")
+    end
+
+    def redis_connection
+      Redis.new(
+        host: 'localhost',
+        port: '6379',
+        db: '4'
+      )
     end
   end
 end
