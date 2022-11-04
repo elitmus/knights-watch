@@ -149,3 +149,5 @@ const connectToVideoProctoringRoom = (props) => {
 }
 window.connectToVideoProctoringRoom = connectToVideoProctoringRoom;
 
+console.log("executing the proctor js")
+
