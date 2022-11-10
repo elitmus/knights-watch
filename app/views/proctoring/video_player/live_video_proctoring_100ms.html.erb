@@ -1,0 +1,48 @@
+<%= stylesheet_link_tag "proctoring/video_player_100ms" %>
+<%= content_tag :div, '', id: 'proctoring-data', data: { app_name: Proctoring.app_name } %>
+<%= content_tag :div, '', id: 'application-token', data: { token: Proctoring::TokensHelper::encode_authentication_token } %>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12 item-align-center d-flex justify-content-center align-items-center">
+      <button class="btn btn-primary mt-5" id="join-proctoring-room-btn">Join Proctoring Room</button>
+    </div>
+  </div>
+  <div class="loader d-none" id="loader"></div>
+  <div id="proctoring-data-component" class="d-none">
+    <div class="row text-white">
+      <div class="col-3">
+        <div class="card bg-danger shadow">
+          <div class="card-body p-2">
+            <span class="data-title h6">Event Code</span>
+            <h1 class="text-white display-4 text-uppercase" id="connected-event">eg</h1>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card bg-success shadow">
+          <div class="card-body p-2">
+            <span class="data-title h6">Candidates In Room</span>
+            <h1 class="text-white display-4 text-uppercase" id="assigned-candidates">0</h1>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card bg-primary shadow">
+          <div class="card-body p-2">
+            <span class="data-title h6">Proctors In Room</span>
+            <!-- <h1 class="display-4 text-uppercase">23</h1> -->
+            <h1 class="text-white display-4 text-uppercase" id="connected-recruiters">0</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row border no-gutters mt-4 h-100">
+      <div class="col-12" style="overflow: scroll;height: 100vh;">
+        <div id="proctoring-videos"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= javascript_include_tag '100ms/proctor', type: 'module' %>

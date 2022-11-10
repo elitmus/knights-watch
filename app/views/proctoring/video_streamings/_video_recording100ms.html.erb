@@ -1,0 +1,4 @@
+<%= javascript_include_tag '100ms/examine', type: 'module' %>
+<%= content_tag :div, '', id: 'proctoring-data', data: {} %>
+<%= content_tag :div, '', id: 'application-token', data: { token: Proctoring::TokensHelper::encode_authentication_token } %>
+

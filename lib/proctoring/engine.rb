@@ -1,11 +1,20 @@
 module Proctoring
-  self.mattr_accessor :media_server_url
-  self.mattr_accessor :app_name
-  self.mattr_accessor :turn_secret
+  mattr_accessor :media_server_url
+  mattr_accessor :app_name
+  mattr_accessor :turn_secret
+  mattr_accessor :hundred_ms_app_access_key
+  mattr_accessor :hundred_ms_app_secret
+  mattr_accessor :hundred_ms_template_id
+  mattr_accessor :hundred_ms_s3_bucket
+  mattr_accessor :hundred_ms_s3_access_key
+  mattr_accessor :hundred_ms_s3_access_secret
+  mattr_accessor :hundred_ms_s3_region
+  mattr_accessor :hundred_ms_auth_secret
 
   self.media_server_url = 'localhost:8000'
   self.app_name = 'default'
   self.turn_secret = 'secret'
+  self.hundred_ms_auth_secret = 'random-key' if Rails.env.test?
 
   def self.setup(&block)
     yield self

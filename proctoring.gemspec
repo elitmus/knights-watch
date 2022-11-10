@@ -7,8 +7,8 @@ require "proctoring/version"
 Gem::Specification.new do |spec|
   spec.name        = "proctoring"
   spec.version     = Proctoring::VERSION
-  spec.authors     = ["Shubham Pandey", "Piyush Swain", "Shireesh Jayashetty"]
-  spec.email       = ["piyush.swain@elitmus.com", "shireesh@elitmus.com"]
+  spec.authors     = ["Shubham Pandey", "Piyush Swain", "Shireesh Jayashetty", "Manish Sharma"]
+  spec.email       = ["piyush.swain@elitmus.com", "shireesh@elitmus.com", "manish.sharma@elitmus.com"]
   spec.homepage    = "https://www.elitmus.com"
   spec.summary     = "A proctoring rails engine to provide proctoring features to varuious apps in a decentralised way."
   spec.description = "A proctoring rails engine to provide proctoring features to varuious apps in a decentralised way."
@@ -28,4 +28,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rails", "~> 6.0"
 
   spec.add_development_dependency "sqlite3"
+  spec.add_runtime_dependency 'jwt'
 end
