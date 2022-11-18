@@ -10,11 +10,13 @@ module Proctoring
   mattr_accessor :hundred_ms_s3_access_secret
   mattr_accessor :hundred_ms_s3_region
   mattr_accessor :hundred_ms_auth_secret
+  mattr_accessor :hundred_ms_webhook_secret
 
   self.media_server_url = 'localhost:8000'
   self.app_name = 'default'
   self.turn_secret = 'secret'
   self.hundred_ms_auth_secret = 'random-key' if Rails.env.test?
+  self.hundred_ms_webhook_secret = 'webhook-secret' if Rails.env.test?
 
   def self.setup(&block)
     yield self
