@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  channel: MyString
+  user_id: 1
+  event_id: 1
+  status: 'active'
+
+two:
+  channel: MyString2
+  user_id: 2
+  event_id: 2
+  status: 'active'
