@@ -17,7 +17,7 @@ module Proctoring::Api::V1
           ProctoringStorageHelper.initiate_processing(invitation_code)
         end
 
-        render json: {}
+        render json: { success: true }
       end
     end
   end
