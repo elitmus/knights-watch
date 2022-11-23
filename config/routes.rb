@@ -15,6 +15,10 @@ Proctoring::Engine.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :authentication, only: :create
+
+      namespace :hundred_ms do
+        resources :services, only: :create
+      end
     end
   end
 end

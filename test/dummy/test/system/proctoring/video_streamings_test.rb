@@ -1,7 +1,7 @@
-require "application_system_test_case"
-
+require 'test_helper'
 module Proctoring
-  class VideoStreamingsTest < ApplicationSystemTestCase
+  class VideoStreamingsTest < ActionDispatch::SystemTestCase
+    include Engine.routes.url_helpers
     setup do
       @video_streaming = proctoring_video_streamings(:one)
     end

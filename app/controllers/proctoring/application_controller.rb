@@ -6,6 +6,12 @@ module Proctoring
       token_valid? request.headers['Token']
     end
 
+    def authenticate_api_token
+      return if request.headers['Api-Secret'] == Proctoring.hundred_ms_webhook_secret
+
+      render json: { success: false, error: 'You are not an authorized person.' }, status: :unauthorized
+    end
+
     private
 
     def token_valid?(token)

@@ -8,6 +8,10 @@ module Proctoring
       @video_streaming = proctoring_video_streamings(:one)
     end
 
+    def teardown
+      @video_streaming&.destroy
+    end
+
     test "should get index" do
       get video_streamings_url
       assert_response :success
@@ -19,9 +23,7 @@ module Proctoring
     end
 
     test "should create video_streaming" do
-      assert_difference('VideoStreaming.count') do
-        post video_streamings_url, params: { video_streaming: { channel: @video_streaming.channel, user_id: @video_streaming.user_id } }
-      end
+      post video_streamings_url, params: { video_streaming: { channel: 'Channel', user_id: 4, event_id: 4 } }
 
       assert_redirected_to video_streaming_url(VideoStreaming.last)
     end
@@ -42,10 +44,9 @@ module Proctoring
     end
 
     test "should destroy video_streaming" do
-      assert_difference('VideoStreaming.count', -1) do
-        delete video_streaming_url(@video_streaming)
-      end
-
+      delete video_streaming_url(@video_streaming.id)
+      @video_streaming.reload
+      assert @video_streaming.stopped?
       assert_redirected_to video_streamings_url
     end
   end
