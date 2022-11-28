@@ -7,6 +7,7 @@ const connectToVideoProctoringRoom = (props) => {
   const hms = new HMSReactiveStore();
   const hmsStore = hms.getStore();
   const hmsActions = hms.getHMSActions();
+  const hmsNotifications = hms.getNotifications();
 
   const htmlElement = (tag, attrs = {}, ...children) => {
     const newElement = document.createElement(tag);
@@ -145,7 +146,7 @@ const connectToVideoProctoringRoom = (props) => {
   }
   
   window.toggleCandidateSound = toggleCandidateSound;
-  connectToRoom(props, renderPeers, onConnection, hmsStore, hmsActions);
+  connectToRoom(props, renderPeers, onConnection, hmsStore, hmsActions, hmsNotifications);
 }
 window.connectToVideoProctoringRoom = connectToVideoProctoringRoom;
 

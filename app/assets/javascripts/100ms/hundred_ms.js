@@ -1,6 +1,11 @@
 import { selectIsConnectedToRoom, selectPeers } from "https://cdn.skypack.dev/@100mslive/hms-video-store";
 
-const connectToRoom = (props, renderPeers, onConnection, hmsStore, hmsActions) => {
+const errorCodes = {
+  CAPTURE_DEVICE: '3002',
+  ICE_CONNECTION_FAILED: '4005'
+}
+
+const connectToRoom = (props, renderPeers, onConnection, hmsStore, hmsActions, hmsNotifications) => {
   const setLocalStorageWithExpiry = (key, value, expiry) => {
     const data = {
       authToken: value,
@@ -44,6 +49,17 @@ const connectToRoom = (props, renderPeers, onConnection, hmsStore, hmsActions) =
         return true;
     }
   }
+
+  hmsNotifications.onNotification((notification) => {
+    switch(notification.data.code){
+      case errorCodes.CAPTURE_DEVICE:
+      case errorCodes.ICE_CONNECTION_FAILED:
+        joinVideoProctoring(props);
+        break;
+      default:
+        return null;
+    }
+  });
 
   const joinRoom = async (props) => {
     await hmsActions.join(

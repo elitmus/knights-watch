@@ -6,11 +6,12 @@ const connectToCandidateRoom = (props) => {
   const hms = new HMSReactiveStore();
   const hmsStore = hms.getStore();
   const hmsActions = hms.getHMSActions();
+  const hmsNotifications = hms.getNotifications();
 
   const renderCandidateStream = (peers) => {
     const video = document.getElementById('vid');
     peers.forEach((peer) => {
-      if(peer.isLocal || peer.name === props.userId){
+      if((peer.isLocal || peer.name === props.userId) && peer.videoTrack){
         hmsActions.attachVideo(peer.videoTrack, video);
       }
     })
@@ -20,7 +21,7 @@ const connectToCandidateRoom = (props) => {
     console.log(isConnected);
   }
 
-  connectToRoom(props, renderCandidateStream, onConnectionCandidate, hmsStore, hmsActions);
+  connectToRoom(props, renderCandidateStream, onConnectionCandidate, hmsStore, hmsActions, hmsNotifications);
 }
 
 window.connectToCandidateRoom = connectToCandidateRoom;
