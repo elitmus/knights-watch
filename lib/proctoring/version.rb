@@ -1,3 +1,3 @@
 module Proctoring
-  VERSION = '0.9.1-beta'.freeze
+  VERSION = '0.9.2-beta'.freeze
 end
