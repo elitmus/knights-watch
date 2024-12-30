@@ -1,0 +1,1 @@
+//= link_directory ../javascripts/100ms .js
