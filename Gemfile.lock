@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    proctoring (0.9.1.pre.beta)
+    proctoring (1.0.0)
       jwt
       rails (~> 6.0)
 
@@ -128,7 +128,8 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    sqlite3 (1.4.2)
+    sqlite3 (1.7.3)
+      mini_portile2 (~> 2.8.0)
     thor (1.2.1)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
@@ -145,4 +146,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   2.3.17
+   2.4.21

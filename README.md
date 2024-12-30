@@ -38,7 +38,7 @@ This section demonstrates how to use this engine with the RubyOnRails applicatio
 1. Add this line to your application's Gemfile:
 
 ```ruby
-gem 'proctoring', '=0.9.0.pre.beta', git: 'https://github.com/elitmus/knights-watch.git'
+gem 'proctoring', '=1.0.0', git: 'https://github.com/elitmus/knights-watch.git'
 ```
 
 2. And then execute:
