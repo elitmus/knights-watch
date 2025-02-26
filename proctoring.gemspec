@@ -7,8 +7,8 @@ require "proctoring/version"
 Gem::Specification.new do |spec|
   spec.name        = "proctoring"
   spec.version     = Proctoring::VERSION
-  spec.authors     = ["Shubham Pandey", "Piyush Swain", "Shireesh Jayashetty", "Manish Sharma"]
-  spec.email       = ["piyush.swain@elitmus.com", "shireesh@elitmus.com", "manish.sharma@elitmus.com"]
+  spec.authors     = ["Shireesh Jayashetty", "Manish Sharma"]
+  spec.email       = ["shireesh@elitmus.com", "manish.sharma@elitmus.com"]
   spec.homepage    = "https://www.elitmus.com"
   spec.summary     = "A proctoring rails engine to provide proctoring features to varuious apps in a decentralised way."
   spec.description = "A proctoring rails engine to provide proctoring features to varuious apps in a decentralised way."
@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
   if spec.respond_to?(:metadata)
-    spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
+    spec.metadata["allowed_push_host"] = "https://rubygems.org"
   else
     raise "RubyGems 2.0 or newer is required to protect against " \
       "public gem pushes."
