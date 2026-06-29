@@ -10,8 +10,15 @@ require "rails/test_help"
 Minitest.backtrace_filter = Minitest::BacktraceFilter.new
 
 
-# Load fixtures from the engine
-if ActiveSupport::TestCase.respond_to?(:fixture_path=)
+# Load fixtures from the engine.
+# Rails 7.1+ replaced the singular `fixture_path=` with `fixture_paths=` (an array);
+# the singular form was removed in Rails 8.
+if ActiveSupport::TestCase.respond_to?(:fixture_paths=)
+  ActiveSupport::TestCase.fixture_paths = [File.expand_path("fixtures", __dir__)]
+  ActionDispatch::IntegrationTest.fixture_paths = ActiveSupport::TestCase.fixture_paths
+  ActiveSupport::TestCase.file_fixture_path = ActiveSupport::TestCase.fixture_paths.first + "/files"
+  ActiveSupport::TestCase.fixtures :all
+elsif ActiveSupport::TestCase.respond_to?(:fixture_path=)
   ActiveSupport::TestCase.fixture_path = File.expand_path("fixtures", __dir__)
   ActionDispatch::IntegrationTest.fixture_path = ActiveSupport::TestCase.fixture_path
   ActiveSupport::TestCase.file_fixture_path = ActiveSupport::TestCase.fixture_path + "/files"

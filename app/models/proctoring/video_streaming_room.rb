@@ -7,7 +7,7 @@ module Proctoring
 
     # validate :check_total_users_equals_channels
 
-    enum status: { active: 0, closed: 1 }
+    enum :status, { active: 0, closed: 1 }
 
     before_validation :ensure_room_has_a_value
 

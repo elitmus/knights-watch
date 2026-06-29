@@ -25,7 +25,11 @@ Gem::Specification.new do |spec|
 
   spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
-  spec.add_dependency "rails", "~> 7.2"
+  spec.add_dependency "rails", ">= 7.2", "< 9.0"
+  # Rails 8 no longer bundles sprockets-rails by default; the engine's views and
+  # assets (javascript_include_tag/stylesheet_link_tag + //= require manifests)
+  # require it at runtime in the host app.
+  spec.add_dependency "sprockets-rails"
 
   spec.add_development_dependency "sqlite3"
   spec.add_runtime_dependency 'jwt'

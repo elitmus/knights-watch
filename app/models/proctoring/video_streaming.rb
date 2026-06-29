@@ -7,7 +7,7 @@ module Proctoring
     has_many_attached :images
     has_many_attached :videos
 
-    enum status: { active: 0, stopped: 1 }
+    enum :status, { active: 0, stopped: 1 }
 
     before_validation :ensure_channel_has_a_value
 
