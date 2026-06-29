@@ -17,6 +17,7 @@ module Proctoring
   self.turn_secret = 'secret'
   self.hundred_ms_auth_secret = 'random-key' if Rails.env.test?
   self.hundred_ms_webhook_secret = 'webhook-secret' if Rails.env.test?
+  self.hundred_ms_app_secret = 'app-secret' if Rails.env.test?
 
   def self.setup(&block)
     yield self
