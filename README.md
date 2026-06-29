@@ -27,6 +27,11 @@ Future plans:
 
 ***This Gem is currently under development and API can change in future***
 
+### Requirements
+
+* Rails `>= 7.2, < 9.0` — verified against Rails 7.2 and Rails 8.1
+* Uses the Sprockets asset pipeline (`sprockets-rails`), pulled in automatically as a dependency
+
 ### Usage
 
 This section demonstrates how to use this engine with the RubyOnRails application to build web-based video proctoring application.
@@ -38,7 +43,7 @@ This section demonstrates how to use this engine with the RubyOnRails applicatio
 1. Add this line to your application's Gemfile:
 
 ```ruby
-gem 'proctoring', '=1.0.0', git: 'https://github.com/elitmus/knights-watch.git'
+gem 'proctoring', '~> 2.1'
 ```
 
 2. And then execute:
