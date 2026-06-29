@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "sprockets-rails"
 
   spec.add_development_dependency "sqlite3"
-  # >= 2.10.3 fixes CVE-2026-45363 (empty-key HMAC bypass); pin to the 2.x line
-  # to avoid the breaking API changes in jwt 3.x.
-  spec.add_runtime_dependency 'jwt', '~> 2.10', '>= 2.10.3'
+  # >= 2.10.3 fixes CVE-2026-45363 (empty-key HMAC bypass). No upper cap: the
+  # gem's encode/decode usage works on jwt 3.x (hosts like dallas run 3.x).
+  spec.add_runtime_dependency 'jwt', '>= 2.10.3'
 end
